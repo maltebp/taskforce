@@ -17,3 +17,5 @@ target_include_directories(imgui
 	PUBLIC ${TF_DIR_ROOT}/external/imgui/include
 	PRIVATE ${TF_DIR_ROOT}/external/imgui/src
 )
+
+set_target_properties(imgui PROPERTIES FOLDER "external")
