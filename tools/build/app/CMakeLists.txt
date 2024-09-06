@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.21)
 
 set(TF_APP_SOURCES 
 	${TF_DIR_SRC}/app/main.cpp
+
+	${TF_DIR_SRC}/app/imgui-app.cpp
+	${TF_DIR_SRC}/app/imgui-app.hpp
 )
 
 add_executable(taskforce.app ${TF_APP_SOURCES})
