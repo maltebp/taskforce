@@ -1,76 +1,78 @@
-#include <imgui.h>
+#include <chrono>
 
-#include "imgui-app.hpp"
+#include "model/workspace.hpp"
+#include "model/time-entry.hpp"
 
-// Tab bar: https://github.com/ocornut/imgui/issues/261
+#include "app/imgui-app.hpp"
+#include "app/views/main-window.hpp"
 
-//bool BeginTabBar(const char* str_id, ImGuiTabBarFlags flags = 0);        // create and append into a TabBar
-//void EndTabBar();
-//bool BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);// create a Tab. Returns true if the Tab is selected.
-//void EndTabItem();                                                       // only call EndTabItem() if BeginTabItem() returns true!
-//void SetTabItemClosed(const char* tab_or_docked_window_label)
+using namespace std::chrono_literals;
 
-namespace tp {
+namespace tf {
 
     namespace {
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        std::shared_ptr<Workspace> g_workspace;
+        std::shared_ptr<MainWindow> g_main_window;
+    }
+
+    std::shared_ptr<Workspace> create_test_workspace() {
+        std::shared_ptr<Workspace> workspace = std::make_shared<Workspace>();
+
+        workspace->name = "IO Workspace";
+        workspace->time_entries.push_back(TimeEntry{
+            "Meeting discussing new feature",
+            std::chrono::year_month_day(2024y, std::chrono::month{5}, 17d),
+            8h,
+            9h + 20min
+        });
+
+        workspace->time_entries.push_back(TimeEntry{
+            "Planning new feature",
+            std::chrono::year_month_day(2024y, std::chrono::month{5}, 17d),
+            9h + 30min,
+            10h + 10min
+        });
+
+        workspace->time_entries.push_back(TimeEntry{
+            "Monthly planning",
+            std::chrono::year_month_day(2024y, std::chrono::month{5}, 18d),
+            10h + 15min,
+            12h + 0min
+        });
+
+        workspace->time_entries.push_back(TimeEntry{
+            "Fixing bug reported by Bob",
+            std::chrono::year_month_day(2024y, std::chrono::month{5}, 18d),
+            13h + 30min,
+            16h + 10min
+        });
+
+        workspace->time_entries.push_back(TimeEntry{
+            "Starting up new feature",
+            std::chrono::year_month_day(2024y, std::chrono::month{5}, 18d),
+            16h + 10min,
+            20h + 5min
+        });
+
+        return workspace;
+    }
+
+    void initialize() {
+        g_workspace = create_test_workspace();
+        g_main_window = std::make_shared<MainWindow>(g_workspace);
     }
 
     void app_loop() {
-
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::Begin("Another Window", &show_another_window, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-
-        if (ImGui::BeginTabBar("MainTabBar")) {
-
-            if (ImGui::BeginTabItem("Avocado"))
-            {
-                ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Broccoli"))
-            {
-                ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Cucumber"))
-            {
-                ImGui::Text("Hello from another window!");
-                ImGui::Columns(2);
-                ImGui::Text("Column 1");
-                ImGui::NextColumn();
-                ImGui::Text("Column 2");
-                ImGui::NextColumn();
-
-                ImGui::Separator();
-                ImGui::Text("Column 2");
-                ImGui::NextColumn();
-                ImGui::Text("Column 2");
-                ImGui::EndTabItem();
-            }
-
-            ImGui::EndTabBar();
-        }
-
-
-        ImGui::End();
-        ImGui::PopStyleVar(1);
+        g_main_window->draw();
     }
 
     void app_shutdown() {
-
+        
     }
 
 }
 
 int main() {
-    return tp::run_imgui_app(tp::app_loop, tp::app_shutdown);
+    tf::initialize();
+    return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

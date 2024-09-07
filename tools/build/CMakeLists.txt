@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.21)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(TF_CXX_STANDARD 20)
+
 project(
 	taskforce
 	LANGUAGES    C CXX
@@ -25,7 +27,6 @@ set_target_properties(gmock PROPERTIES FOLDER "external")
 set_target_properties(gmock_main PROPERTIES FOLDER "external")
 set_target_properties(gtest PROPERTIES FOLDER "external")
 set_target_properties(gtest_main PROPERTIES FOLDER "external")
-
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/model)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests)

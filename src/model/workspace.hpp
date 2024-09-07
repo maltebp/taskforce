@@ -11,8 +11,6 @@ namespace tf {
 	class Workspace {
 	public:
 
-	private:
-
 		std::string name;
 
 		std::vector<TimeEntry> time_entries;

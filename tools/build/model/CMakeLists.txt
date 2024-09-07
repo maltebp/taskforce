@@ -11,6 +11,10 @@ set(TF_MODEL_SOURCES
 
 add_library(taskforce.model ${TF_MODEL_SOURCES})
 
+set_target_properties(taskforce.model PROPERTIES
+	CXX_STANDARD ${TF_CXX_STANDARD}
+)
+
 target_include_directories(taskforce.model
 	PUBLIC ${TF_DIR_SRC}/model)
 

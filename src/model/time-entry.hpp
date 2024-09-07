@@ -10,11 +10,11 @@ namespace tf {
 
 		std::string description;
 
-		std::time_t date;
+		std::chrono::year_month_day date;
 
-		std::time_t start_time;
+		std::chrono::duration<double> start_time;
 
-		std::time_t end_time;
+		std::chrono::duration<double> end_time;
 
 	};
 
