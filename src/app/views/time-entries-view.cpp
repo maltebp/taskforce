@@ -1,6 +1,7 @@
 #include "time-entries-view.hpp"
 
 #include <imgui.h>
+#include <imgui_stdlib.h>
 
 #include "workspace.hpp"
 
@@ -76,24 +77,26 @@ namespace tf {
             {
                 for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
                 {
+                    ImGui::PushID(row);
+
+                    auto add_editable_cell = [](const std::string& label, std::string& text_to_edit) {
+                        ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(0, 0, 0, 0));
+                        ImGui::PushItemWidth(-FLT_MIN);
+                        ImGui::InputText(label.c_str(), &text_to_edit);
+                        ImGui::PopItemWidth();
+                        ImGui::PopStyleColor();
+                    };
+
                     ImGui::TableNextRow();
 
                     TimeEntry& entry = m_workspace->time_entries[row];
 
                     ImGui::TableSetColumnIndex(0);
-                    char buffer[100];
-                    int i = 0;
-                    for (;  i < entry.description.size() && i < 99; i++) {
-                        buffer[i] = entry.description[i];
-                    }
-                    buffer[i] = '\0';
-                    
-                    ImGui::InputText((std::string("c") + std::to_string(row)).c_str(), buffer, 100);
-                    entry.description = buffer;
-
+                    add_editable_cell("description", entry.description);
 
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::Text("%d-%d-%d", entry.date.year(), entry.date.month(), entry.date.day());
+                    std::string date_text = std::to_string(static_cast<int>(entry.date.year())) + "-" + std::to_string(static_cast<unsigned int>(entry.date.month())) + "-" + std::to_string(static_cast<unsigned int>(entry.date.day()));
+                    add_editable_cell("date", date_text);
 
                     ImGui::TableSetColumnIndex(2);
                     ImGui::Text(
@@ -110,10 +113,7 @@ namespace tf {
                         std::chrono::duration_cast<std::chrono::minutes>(entry.end_time).count() % 60
                     );;
 
-                    for (int column = 0; column < 4; column++)
-                    {
-                        
-                    }
+                    ImGui::PopID();
                 }
             }
             ImGui::EndTable();

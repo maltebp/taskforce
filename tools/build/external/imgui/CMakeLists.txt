@@ -7,6 +7,7 @@ set(TF_IMGUI_SOURCES
 	${TF_DIR_ROOT}/external/imgui/src/imgui_tables.cpp
 	${TF_DIR_ROOT}/external/imgui/src/imgui_widgets.cpp
 	${TF_DIR_ROOT}/external/imgui/src/imgui.cpp
+	${TF_DIR_ROOT}/external/imgui/src/imgui_stdlib.cpp
 	${TF_DIR_ROOT}/external/imgui/src/imgui_impl_win32.cpp
 	${TF_DIR_ROOT}/external/imgui/src/imgui_impl_dx11.cpp
 )
