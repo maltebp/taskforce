@@ -12,9 +12,9 @@ namespace tf {
 
 		std::chrono::year_month_day date;
 
-		std::chrono::duration<double> start_time;
+		std::chrono::minutes start_time;
 
-		std::chrono::duration<double> end_time;
+		std::chrono::minutes end_time;
 
 	};
 

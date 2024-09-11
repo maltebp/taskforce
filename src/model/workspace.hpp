@@ -13,7 +13,7 @@ namespace tf {
 
 		std::string name;
 
-		std::vector<TimeEntry> time_entries;
+		std::vector<std::shared_ptr<TimeEntry>> time_entries;
 
 	};
 
