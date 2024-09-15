@@ -50,13 +50,29 @@ namespace tf {
             m_end_time(std::format("{:%H:%M}", m_time_entry->end_time))
     { }
 
-    bool TimeEntryInput::update_description() {
-        m_time_entry->description = m_description;
+    bool TimeEntryInput::description_is_valid() const {
         return true;
+    }
+
+    bool TimeEntryInput::update_description() {
+        if( description_is_valid() ) {
+            m_time_entry->description = m_description;
+            return true;
+        }
+        return false;
+    }
+
+    bool TimeEntryInput::date_is_valid() const{
+        return true; 
     }
 
     bool TimeEntryInput::update_date() {
         return true;
+    }
+
+    bool TimeEntryInput::start_time_is_valid() const {
+        std::optional<std::chrono::minutes> time = parse_time(m_start_time);
+        return time.has_value();
     }
 
     bool TimeEntryInput::update_start_time() {
@@ -66,6 +82,11 @@ namespace tf {
             return true;
         }
         return false;
+    }
+
+    bool TimeEntryInput::end_time_is_valid() const {
+        std::optional<std::chrono::minutes> time = parse_time(m_end_time);
+        return time.has_value();
     }
 
     bool TimeEntryInput::update_end_time() {
@@ -86,6 +107,13 @@ namespace tf {
         for( std::shared_ptr<TimeEntry> time_entry : m_workspace->time_entries ) {
             m_time_entries_inputs.push_back(std::make_unique<TimeEntryInput>(time_entry));
         }
+    }
+
+    void TimeEntriesViewModel::add_new_entry_today() {
+        std::shared_ptr<TimeEntry> new_entry = std::make_shared<TimeEntry>();
+        new_entry->date = std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now());
+        m_workspace->time_entries.push_back(new_entry);
+        m_time_entries_inputs.push_back(std::make_unique<TimeEntryInput>(new_entry));
     }
 
 	TimeEntriesView::TimeEntriesView(std::shared_ptr<Workspace> workspace) 
@@ -150,6 +178,14 @@ namespace tf {
             ImGui::TableSetupColumn("End time", ImGuiTableColumnFlags_None);
             ImGui::TableHeadersRow();
 
+            // TODO: Test this ImGui::InputText("1", buf, IM_ARRAYSIZE(buf));
+
+            bool created_new = false;
+            if( ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Enter, ImGuiInputFlags_RouteGlobal) ) {
+                m_view_model.add_new_entry_today();
+                created_new = true;
+            }
+
             // Demonstrate using clipper for large vertical lists
             ImGuiListClipper clipper;
             clipper.Begin(static_cast<int>(m_view_model.m_time_entries_inputs.size()));
@@ -165,36 +201,56 @@ namespace tf {
                             is_valid_value ? IM_COL32(0, 0, 0, 0) : IM_COL32(255, 0, 0, 255)
                         );
                         ImGui::PushItemWidth(-FLT_MIN);
-                        ImGui::InputText(label.c_str(), &text_to_edit);
+                        bool enter_was_pressed = ImGui::InputText(label.c_str(), &text_to_edit, ImGuiInputTextFlags_EnterReturnsTrue);
                         ImGui::PopItemWidth();
                         ImGui::PopStyleColor();
+
+                        return enter_was_pressed;
                     };
 
                     ImGui::TableNextRow();
 
                     TimeEntryInput& entry_input = *m_view_model.m_time_entries_inputs[row];
 
-                    bool is_valid_value;
+                    if( created_new && row == clipper.DisplayEnd - 1 ) {
+                        ImGui::SetKeyboardFocusHere();
+                    }
 
-                    is_valid_value = entry_input.update_description();
-                    ImGui::TableSetColumnIndex(0);
-                    add_editable_cell("description", entry_input.m_description, is_valid_value);
-                    entry_input.update_description();
+                    { // Description
+                        ImGui::TableSetColumnIndex(0);
+                        bool enter_was_pressed = add_editable_cell("description", entry_input.m_description, entry_input.description_is_valid());
+                        if( enter_was_pressed ) {
+                            entry_input.update_description();
+                            ImGui::SetKeyboardFocusHere();
+                        }
+                    }
 
-                    is_valid_value = entry_input.update_date();
-                    ImGui::TableSetColumnIndex(1);
-                    add_editable_cell("date", entry_input.m_date, is_valid_value);
-                    entry_input.update_date();
+                    { // Date
+                        ImGui::TableSetColumnIndex(1);
+                        bool enter_was_pressed = add_editable_cell("date", entry_input.m_date, entry_input.date_is_valid());
+                        if( enter_was_pressed ) {
+                            ImGui::SetKeyboardFocusHere();
+                            entry_input.update_date();
+                        }
+                    }
 
-                    is_valid_value = entry_input.update_start_time();
-                    ImGui::TableSetColumnIndex(2);
-                    add_editable_cell("start_time", entry_input.m_start_time, is_valid_value);
-                    entry_input.update_start_time();
+                    { // Start time
+                        ImGui::TableSetColumnIndex(2);
+                        bool enter_was_pressed = add_editable_cell("start_time", entry_input.m_start_time, entry_input.start_time_is_valid());
+                        if( enter_was_pressed ) {
+                            entry_input.update_start_time();
+                            ImGui::SetKeyboardFocusHere();
+                        }
+                    }
 
-                    is_valid_value = entry_input.update_end_time();
-                    ImGui::TableSetColumnIndex(3);
-                    add_editable_cell("end_time", entry_input.m_end_time, is_valid_value);
-                    entry_input.update_end_time();
+                    { // End time
+                        ImGui::TableSetColumnIndex(3);
+                        bool enter_was_pressed = add_editable_cell("end_time", entry_input.m_end_time, entry_input.end_time_is_valid());
+                        if( enter_was_pressed ) {
+                            entry_input.update_end_time();
+                            ImGui::SetKeyboardFocusHere();
+                        }
+                    }
 
                     ImGui::PopID();
                 }

@@ -16,11 +16,19 @@ namespace tf {
 
         // Parses the input string, updates the m_time_entry if it valid, returns whether it was updated
 
+        bool description_is_valid() const;
+
         bool update_description();
+
+        bool date_is_valid() const;
 
         bool update_date();
 
+        bool start_time_is_valid() const;
+
         bool update_start_time();
+
+        bool end_time_is_valid() const;
 
         bool update_end_time();
 
@@ -35,6 +43,8 @@ namespace tf {
     public:
            
         TimeEntriesViewModel(std::shared_ptr<Workspace> workspace);
+
+        void add_new_entry_today();
 
         const std::shared_ptr<Workspace> m_workspace;
         std::vector<std::unique_ptr<TimeEntryInput>> m_time_entries_inputs;
