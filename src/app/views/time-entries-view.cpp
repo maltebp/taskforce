@@ -6,41 +6,11 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
+#include "parse-util.hpp"
 #include "workspace.hpp"
 
 
 namespace tf {
-
-    // TODO: Unit test this
-    std::optional<std::chrono::minutes> parse_time(const std::string& minutes_string_input)
-    {
-        if( minutes_string_input.size() == 0 ) return std::chrono::minutes(0);
-
-        std::string cleaned_input = minutes_string_input;
-        std::string::iterator new_end = std::remove_if(cleaned_input.begin(), cleaned_input.end(), [](int i) -> int { return std::isspace(i); });
-        cleaned_input.erase(new_end, cleaned_input.end());
-
-        std::size_t colon_index = cleaned_input.find(':');
-        std::string hours_string = cleaned_input.substr(0, colon_index);
-
-        try {
-
-            int hours = hours_string.size() == 0 ? 0 : std::stoi(hours_string);
-            if (hours < 0 || hours > 24) return {};
-
-            if (hours_string.size() == cleaned_input.size()) return std::chrono::minutes(hours * 60);
-                
-            std::string minutes_string = cleaned_input.substr(colon_index + 1);
-
-            int minutes = minutes_string.size() == 0 ? 0 : std::stoi(minutes_string);
-            if (minutes < 0 || minutes > 60) return {};
-
-            return std::chrono::minutes(hours * 60 + minutes);
-        }
-        catch (std::invalid_argument e) {
-            return {};
-        }        
-    }
 
     TimeEntryInput::TimeEntryInput(std::shared_ptr<TimeEntry> time_entry)
         :   m_time_entry(time_entry),
@@ -71,12 +41,12 @@ namespace tf {
     }
 
     bool TimeEntryInput::start_time_is_valid() const {
-        std::optional<std::chrono::minutes> time = parse_time(m_start_time);
+        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_start_time);
         return time.has_value();
     }
 
     bool TimeEntryInput::update_start_time() {
-        std::optional<std::chrono::minutes> time = parse_time(m_start_time);
+        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_start_time);
         if (time.has_value()) {
             m_time_entry->start_time = time.value();
             return true;
@@ -85,12 +55,12 @@ namespace tf {
     }
 
     bool TimeEntryInput::end_time_is_valid() const {
-        std::optional<std::chrono::minutes> time = parse_time(m_end_time);
+        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_end_time);
         return time.has_value();
     }
 
     bool TimeEntryInput::update_end_time() {
-        std::optional<std::chrono::minutes> time = parse_time(m_end_time);
+        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_end_time);
         if (time.has_value()) {
             m_time_entry->end_time = time.value();
             return true;
@@ -120,49 +90,6 @@ namespace tf {
 		:	m_view_model(workspace)
 	{ }
 
-    //const int COLUMNS_COUNT = 3;
-    //if (ImGui::BeginTable("table_custom_headers", COLUMNS_COUNT, ImGuiTableFlags_Borders | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable))
-    //{
-    //    ImGui::TableSetupColumn("Apricot");
-    //    ImGui::TableSetupColumn("Banana");
-    //    ImGui::TableSetupColumn("Cherry");
-
-    //    // Dummy entire-column selection storage
-    //    // FIXME: It would be nice to actually demonstrate full-featured selection using those checkbox.
-    //    static bool column_selected[3] = {};
-
-    //    // Instead of calling TableHeadersRow() we'll submit custom headers ourselves
-    //    ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-    //    for (int column = 0; column < COLUMNS_COUNT; column++)
-    //    {
-    //        ImGui::TableSetColumnIndex(column);
-    //        const char* column_name = ImGui::TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
-    //        ImGui::PushID(column);
-    //        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-    //        ImGui::Checkbox("##checkall", &column_selected[column]);
-    //        ImGui::PopStyleVar();
-    //        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-    //        ImGui::TableHeader(column_name);
-    //        ImGui::PopID();
-    //    }
-
-    //    for (int row = 0; row < 5; row++)
-    //    {
-    //        ImGui::TableNextRow();
-    //        for (int column = 0; column < 3; column++)
-    //        {
-    //            char buf[32];
-    //            sprintf(buf, "Cell %d,%d", column, row);
-    //            ImGui::TableSetColumnIndex(column);
-    //            ImGui::Selectable(buf, column_selected[column]);
-    //        }
-    //    }
-    //    ImGui::EndTable();
-    //}
-    //ImGui::TreePop();
-
-    // For advanced: 6764
-
 	void TimeEntriesView::draw() {
 
         static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
@@ -178,10 +105,8 @@ namespace tf {
             ImGui::TableSetupColumn("End time", ImGuiTableColumnFlags_None);
             ImGui::TableHeadersRow();
 
-            // TODO: Test this ImGui::InputText("1", buf, IM_ARRAYSIZE(buf));
-
             bool created_new = false;
-            if( ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Enter, ImGuiInputFlags_RouteGlobal) ) {
+            if( ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Enter, ImGuiInputFlags_RouteGlobal | ImGuiInputFlags_RouteOverFocused) ) {
                 m_view_model.add_new_entry_today();
                 created_new = true;
             }
