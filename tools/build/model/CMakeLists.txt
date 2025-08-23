@@ -2,13 +2,16 @@ cmake_minimum_required(VERSION 3.21)
 
 
 set(TF_MODEL_SOURCES 
+	${TF_DIR_SRC}/model/core/assert.hpp
+
 	${TF_DIR_SRC}/model/workspace.hpp
 	${TF_DIR_SRC}/model/workspace.cpp
 
 	${TF_DIR_SRC}/model/time-entry.hpp
 	${TF_DIR_SRC}/model/time-entry.cpp
-
-	${TF_DIR_SRC}/model/core/assert.hpp
+	
+	${TF_DIR_SRC}/model/parse-util.hpp
+	${TF_DIR_SRC}/model/parse-util.cpp
 )
 
 add_library(taskforce.model ${TF_MODEL_SOURCES})

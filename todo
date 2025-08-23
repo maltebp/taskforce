@@ -1,0 +1,16 @@
+This todo uses the format of the VS Code extension Todo+
+
+
+Enter time entries:
+    ☐ Bug: you can enter invalid time input
+        ☐ Move Input code so it can be tested
+        ☐ Investigate if I should change to exception
+        ☐ Setup test for input logic
+            ☐ Date
+            ☐ Start time
+            ☐ End time
+        ☐ Set CI
+        
+
+    ☐ Serialization
+    
