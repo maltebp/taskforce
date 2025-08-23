@@ -10,6 +10,8 @@
 #ifdef _WIN32
 #include <windows.h>
 #define TF_DEBUG_BREAK() DebugBreak()
+#else
+#define TF_DEBUG_BREAK()
 #endif
 
 namespace tf {
