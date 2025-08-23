@@ -1,5 +1,7 @@
 #include <chrono>
 
+#include "model/core/assert.hpp"
+
 #include "model/workspace.hpp"
 #include "model/time-entry.hpp"
 
@@ -73,6 +75,11 @@ namespace tf {
 }
 
 int main() {
+
+    int a = 1;
+    int b = 2;
+    tf::assert(1 > 2, "The value {} is not larger than {}", a, b);
+
     tf::initialize();
     return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

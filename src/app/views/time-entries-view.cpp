@@ -2,6 +2,7 @@
 
 #include <format>
 #include <algorithm>
+#include <iomanip>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -10,6 +11,11 @@
 
 
 namespace tf {
+
+ /*   std::optional<std::chrono::year_month_day> parse_date(const std::string& date_string_input)
+    {
+
+    }*/
 
     // TODO: Unit test this
     std::optional<std::chrono::minutes> parse_time(const std::string& minutes_string_input)
@@ -51,6 +57,7 @@ namespace tf {
     { }
 
     bool TimeEntryInput::description_is_valid() const {
+        // Description is always valid for now (will it ever not be?)
         return true;
     }
 
@@ -67,6 +74,10 @@ namespace tf {
     }
 
     bool TimeEntryInput::update_date() {
+        if( date_is_valid() ) {
+            // m_time_entry->date = m_date;
+            return true;
+        }
         return true;
     }
 

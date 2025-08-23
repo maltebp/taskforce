@@ -7,6 +7,8 @@ set(TF_MODEL_SOURCES
 
 	${TF_DIR_SRC}/model/time-entry.hpp
 	${TF_DIR_SRC}/model/time-entry.cpp
+
+	${TF_DIR_SRC}/model/core/assert.hpp
 )
 
 add_library(taskforce.model ${TF_MODEL_SOURCES})
