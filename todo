@@ -1,5 +1,11 @@
 This todo uses the format of the VS Code extension Todo+
 
+Implement assert function:
+    ✔ Make source_location work (untested)
+    ✔ Make it break if debugger is attached
+    ✔ Make it possible to customize printing
+        ✔ Standard print for unit tests
+        ☐ Dialog Box for UI
 
 Enter time entries:
     ☐ Bug: you can enter invalid time input
@@ -11,6 +17,51 @@ Enter time entries:
             ☐ End time
         ☐ Set CI
         
-
     ☐ Serialization
+
+First prototype:
+
+    Edit data:
+            
+        ☐ Unit test time parsing
+            ☐ Understand gtest
+            ☐ Ensure test setup works (don't remember where I left off)
+            ☐ Write tests
+
+        ☐ Validate date
+        ☐ Commit data
+        ☐ Add "category"
+            ☐ Add "category system/concept
+            ☐ Add editable category from data (dropdown)
+        ☐ Split up time-entries-view.hpp
+        
     
+    Adding entry:
+        ☐ Shortcut
+        ☐ Add new entry
+
+    Data serialization:
+        ☐ Decide on format
+        ☐ Design serialization
+        ☐ Loading data
+        ☐ Saving data
+
+
+What I want for first usable prototype:
+    Easily put in time entries for what I work on
+        Put in description, start, date and end time
+        Assign category (review,). These categories can be hardcoded for now
+    Get overview of time spent
+        Various ranges:.
+            Today
+            This week
+        Metrics
+            Total time spent
+            Time spent on each category
+        
+    Category: may be inherited from task, but may be overwritten.
+    Tasks are not part of first prototype
+
+
+Backlog:
+    ☐ A cross-platform message box for asserts (not using ImGUI because it may not be initialized yet)

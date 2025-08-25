@@ -1,9 +1,7 @@
 #pragma once
 
-#include <cstdlib>
+#include <functional>
 #include <format>
-#include <iostream>
-#include <sstream>
 #include <source_location>
 #include <string_view>
 
@@ -34,6 +32,18 @@ namespace tf {
         };
     }
 
+    struct AssertInfo {
+        std::string_view message;
+        std::source_location& source_location;
+    };
+
+    /**
+     * @brief The function which will be called to report an error. If a debugger is attached it 
+     * will break after this is called, and exit with an error after that. By default it will 
+     * just print the message to 
+    */
+    extern std::function<void(const AssertInfo&)> s_assert_report_function;
+
     template<typename ... TArgs>
     [[noreturn]] static void assert(
         bool assertedValue,
@@ -42,18 +52,13 @@ namespace tf {
     {
         if( assertedValue ) return;
 
-        std::ostringstream message;
-        message << std::vformat(
-            std::string("Assert occured in {} at {}:{},{}: ") + formatWithLocation.message,
-            std::make_format_args(
-                formatWithLocation.source_location.file_name(),
-                formatWithLocation.source_location.function_name(),
-                formatWithLocation.source_location.line(),
-                formatWithLocation.source_location.column(),
-                format_args...)
-        );
+        std::ostringstream formattedMessage;
+        formattedMessage << std::vformat(formatWithLocation.message, std::make_format_args(format_args...));
 
-        std::cerr << message.str() << std::endl;
+        if( s_assert_report_function != nullptr ) {
+            AssertInfo assert_info{ formattedMessage.str(), formatWithLocation.source_location };
+            s_assert_report_function(assert_info);
+        }
 
         TF_DEBUG_BREAK();
 

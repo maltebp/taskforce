@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 
 set(TF_MODEL_SOURCES 
 	${TF_DIR_SRC}/model/core/assert.hpp
+	${TF_DIR_SRC}/model/core/assert.cpp
 
 	${TF_DIR_SRC}/model/workspace.hpp
 	${TF_DIR_SRC}/model/workspace.cpp
