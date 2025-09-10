@@ -5,12 +5,7 @@
 #include <source_location>
 #include <string_view>
 
-#ifdef _WIN32
-#include <windows.h>
-#define TF_DEBUG_BREAK() DebugBreak()
-#else
-#define TF_DEBUG_BREAK()
-#endif
+#include "core/assert_handling.hpp"
 
 namespace tf {
 
@@ -32,18 +27,6 @@ namespace tf {
         };
     }
 
-    struct AssertInfo {
-        std::string_view message;
-        std::source_location& source_location;
-    };
-
-    /**
-     * @brief The function which will be called to report an error. If a debugger is attached it 
-     * will break after this is called, and exit with an error after that. By default it will 
-     * just print the message to 
-    */
-    extern std::function<void(const AssertInfo&)> s_assert_report_function;
-
     template<typename ... TArgs>
     [[noreturn]] static void assert(
         bool assertedValue,
@@ -52,17 +35,12 @@ namespace tf {
     {
         if( assertedValue ) return;
 
-        std::ostringstream formattedMessage;
-        formattedMessage << std::vformat(formatWithLocation.message, std::make_format_args(format_args...));
+        std::ostringstream formatted_message_stream{};
+        formatted_message_stream << std::vformat(formatWithLocation.message, std::make_format_args(format_args...));
+        std::string formatted_message = formatted_message_stream.str();
 
-        if( s_assert_report_function != nullptr ) {
-            AssertInfo assert_info{ formattedMessage.str(), formatWithLocation.source_location };
-            s_assert_report_function(assert_info);
-        }
-
-        TF_DEBUG_BREAK();
-
-        std::exit(-1);
+        AssertInfo assert_info{ formatted_message, formatWithLocation.source_location };
+        tf::internal::report_assert(assert_info);
     }
 
 }

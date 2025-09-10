@@ -76,6 +76,8 @@ namespace tf {
 
 int main() {
 
+    tf::s_assert_report_function = tf::report_assert_to_dialog;
+
     int a = 1;
     int b = 2;
     tf::assert(1 > 2, "The value {} is not larger than {}", a, b);
