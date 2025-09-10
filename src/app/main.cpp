@@ -78,10 +78,7 @@ int main() {
 
     tf::s_assert_report_function = tf::report_assert_to_dialog;
 
-    int a = 1;
-    int b = 2;
-    tf::assert(1 > 2, "The value {} is not larger than {}", a, b);
-
     tf::initialize();
+
     return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

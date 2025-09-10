@@ -1,15 +1,16 @@
 #include "parse-util.hpp"
 
+#include "core/string-util.hpp"
 
-namespace tf {
 
-    std::optional<std::chrono::minutes> parse_util::parse_hours_minutes(const std::string& text_to_parse) {
-        if( text_to_parse.size() == 0 ) return std::chrono::minutes(0);
+namespace tf::parse_util {
 
-        std::string cleaned_input = text_to_parse;
-        std::string::iterator new_end = std::remove_if(cleaned_input.begin(), cleaned_input.end(), [](int i) -> int { return std::isspace(i); });
-        cleaned_input.erase(new_end, cleaned_input.end());
+    std::optional<std::chrono::minutes> parse_hours_minutes(std::string_view text_to_parse) {
+        
+        if( text_to_parse.size() == 0 ) return std::nullopt;
 
+        std::string cleaned_input = tf::string_util::remove_whitespace(text_to_parse);
+        
         std::size_t colon_index = cleaned_input.find(':');
         std::string hours_string = cleaned_input.substr(0, colon_index);
 

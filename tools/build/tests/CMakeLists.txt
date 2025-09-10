@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
 
 set(TF_TESTS_SOURCES 
-	${TF_DIR_SRC}/tests/test_test.cpp
+	${TF_DIR_SRC}/tests/model/parse-util.cpp
+	${TF_DIR_SRC}/tests/model/string-util.cpp
 )
 
-add_library(taskforce.tests ${TF_TESTS_SOURCES})
+add_executable(taskforce.tests ${TF_TESTS_SOURCES})
 
 set_target_properties(taskforce.tests PROPERTIES
 	CXX_STANDARD ${TF_CXX_STANDARD}

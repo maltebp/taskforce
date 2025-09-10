@@ -6,6 +6,9 @@ set(TF_MODEL_SOURCES
 	${TF_DIR_SRC}/model/core/assert_handling.hpp
 	${TF_DIR_SRC}/model/core/assert_handling.cpp
 
+	${TF_DIR_SRC}/model/core/string-util.hpp
+	${TF_DIR_SRC}/model/core/string-util.cpp
+
 	${TF_DIR_SRC}/model/workspace.hpp
 	${TF_DIR_SRC}/model/workspace.cpp
 
