@@ -6,8 +6,16 @@ set(TF_APP_SOURCES
 	${TF_DIR_SRC}/app/imgui-app.hpp
 	${TF_DIR_SRC}/app/imgui-app.cpp
 
+	${TF_DIR_SRC}/app/views/time-entry.hpp
+
+	${TF_DIR_SRC}/app/views/time-entry-input.hpp
+	${TF_DIR_SRC}/app/views/time-entry-input.cpp
+
 	${TF_DIR_SRC}/app/views/time-entries-view.hpp
 	${TF_DIR_SRC}/app/views/time-entries-view.cpp
+	
+	${TF_DIR_SRC}/app/views/time-entries-view-model.hpp
+	${TF_DIR_SRC}/app/views/time-entries-view-model.cpp
 
 	${TF_DIR_SRC}/app/views/main-window.hpp
 	${TF_DIR_SRC}/app/views/main-window.cpp

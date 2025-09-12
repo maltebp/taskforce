@@ -8,14 +8,13 @@ Implement assert function:
         ✔ Dialog Box for UI
 
 Enter time entries:
-    ☐ Bug: you can enter invalid time input
+    ✔ Bug: you can enter invalid time input
         ✔ Move Input code so it can be tested
-        ☐ Change parse_util::parse_hours_minutes to not parse hours if there is no colon
-        ☐ Setup test for input logic
-            ☐ Date
-            ☐ Start time
-            ☐ End time
-        ☐ Set CI
+        
+        ✔ Setup test for input logic
+            ✔ Date
+            ✔ Start time
+            ✔ End time
         
     ☐ Serialization
 
@@ -64,4 +63,10 @@ What I want for first usable prototype:
 
 
 Backlog:
+    ☐ Make Ctrl+Enter create new row even if a row is selected
+    parse_util:
+        parse_hours_minutes:
+            ☐ Do not parse hours if there is no colon
+        parse_date:
+            ☐ Auto input date if there is no year
     ☐ A cross-platform message box for asserts (not using ImGUI because it may not be initialized yet)

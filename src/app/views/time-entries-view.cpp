@@ -7,90 +7,12 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
-#include "parse-util.hpp"
-#include "workspace.hpp"
+#include "app/views/time-entry-input.hpp"
+#include "model/parse-util.hpp"
+#include "model/workspace.hpp"
 
 
 namespace tf {
-
-    TimeEntryInput::TimeEntryInput(std::shared_ptr<TimeEntry> time_entry)
-        :   m_time_entry(time_entry),
-            m_description(m_time_entry->description),
-            m_date(std::format("{:%y-%m-%d}", m_time_entry->date)),
-            m_start_time(std::format("{:%H:%M}", m_time_entry->start_time)),
-            m_end_time(std::format("{:%H:%M}", m_time_entry->end_time))
-    { }
-
-    bool TimeEntryInput::description_is_valid() const {
-        // Description is always valid for now (will it ever not be?)
-        return true;
-    }
-
-    bool TimeEntryInput::update_description() {
-        if( description_is_valid() ) {
-            m_time_entry->description = m_description;
-            return true;
-        }
-        return false;
-    }
-
-    bool TimeEntryInput::date_is_valid() const{
-        return true; 
-    }
-
-    bool TimeEntryInput::update_date() {
-        if( date_is_valid() ) {
-            // m_time_entry->date = m_date;
-            return true;
-        }
-        return true;
-    }
-
-    bool TimeEntryInput::start_time_is_valid() const {
-        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_start_time);
-        return time.has_value();
-    }
-
-    bool TimeEntryInput::update_start_time() {
-        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_start_time);
-        if (time.has_value()) {
-            m_time_entry->start_time = time.value();
-            return true;
-        }
-        return false;
-    }
-
-    bool TimeEntryInput::end_time_is_valid() const {
-        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_end_time);
-        return time.has_value();
-    }
-
-    bool TimeEntryInput::update_end_time() {
-        std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_end_time);
-        if (time.has_value()) {
-            m_time_entry->end_time = time.value();
-            return true;
-        }
-        return false;
-    }
-
-
-    TimeEntriesViewModel::TimeEntriesViewModel(std::shared_ptr<Workspace> workspace)
-        :   m_workspace(workspace)
-    { 
-        m_time_entries_inputs.reserve(m_workspace->time_entries.size());
-
-        for( std::shared_ptr<TimeEntry> time_entry : m_workspace->time_entries ) {
-            m_time_entries_inputs.push_back(std::make_unique<TimeEntryInput>(time_entry));
-        }
-    }
-
-    void TimeEntriesViewModel::add_new_entry_today() {
-        std::shared_ptr<TimeEntry> new_entry = std::make_shared<TimeEntry>();
-        new_entry->date = std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now());
-        m_workspace->time_entries.push_back(new_entry);
-        m_time_entries_inputs.push_back(std::make_unique<TimeEntryInput>(new_entry));
-    }
 
 	TimeEntriesView::TimeEntriesView(std::shared_ptr<Workspace> workspace) 
 		:	m_view_model(workspace)
