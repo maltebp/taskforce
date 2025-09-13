@@ -16,7 +16,12 @@ Enter time entries:
             ✔ Start time
             ✔ End time
         
-    ☐ Serialization
+Serialization:
+    ☐ Figure out design
+    ☐ Simple JSON serializer
+    ☐ Write tests
+
+☐ Setup package manager
 
 First prototype:
 

@@ -7,6 +7,8 @@
 
 #include "core/assert_handling.hpp"
 
+// TODO: Rename this to expect
+
 namespace tf {
 
     namespace internal {
@@ -28,7 +30,16 @@ namespace tf {
     }
 
     template<typename ... TArgs>
-    [[noreturn]] static void assert(
+    [[noreturn]] static void expect(bool assertedValue, std::source_location source_location = {})
+    {
+        if( assertedValue ) return;
+
+        AssertInfo assert_info{ "", source_location };
+        tf::internal::report_assert(assert_info);
+    }
+
+    template<typename ... TArgs>
+    [[noreturn]] static void expect(
         bool assertedValue,
         internal::FormatWithLocation formatWithLocation,
         TArgs... format_args)

@@ -37,9 +37,13 @@ namespace tf {
                     assert_info.source_location.line(),
                     assert_info.source_location.column()
                 )
-            )
-            << assert_info.message
-            << std::endl;
+            );
+
+        if( assert_info.message.size() > 0 ) {
+            std::cerr << assert_info.message;
+        }
+
+        std::cerr << std::endl;
     }
 
     void report_assert_to_dialog(const AssertInfo& assert_info) {
@@ -48,15 +52,18 @@ namespace tf {
 
         message_stream
             << std::vformat(
-                std::string("Assert occured at\n{}\nin\n{}:{},{}:\n\n"),
+                std::string("Assert occured at\n{}\nin\n{}:{},{}"),
                 std::make_format_args(
                     assert_info.source_location.function_name(),
                     assert_info.source_location.file_name(),
                     assert_info.source_location.line(),
                     assert_info.source_location.column()
                 )
-            )
-            << assert_info.message;
+            );
+
+        if( assert_info.message.size() > 0 ) {
+            message_stream << ":\n\n" << assert_info.message;
+        }
 
         std::string message = message_stream.str();
 

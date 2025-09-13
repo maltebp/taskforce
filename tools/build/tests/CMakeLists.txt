@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.21)
 set(TF_TESTS_SOURCES 
 	${TF_DIR_SRC}/tests/model/parse-util.cpp
 	${TF_DIR_SRC}/tests/model/string-util.cpp
+
+	${TF_DIR_SRC}/tests/model/serialization/json-serialization-tests.cpp
 )
 
 add_executable(taskforce.tests ${TF_TESTS_SOURCES})

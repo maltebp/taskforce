@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.21)
 
 
 set(TF_MODEL_SOURCES 
+
+
 	${TF_DIR_SRC}/model/core/assert.hpp
 	${TF_DIR_SRC}/model/core/assert_handling.hpp
 	${TF_DIR_SRC}/model/core/assert_handling.cpp
@@ -17,6 +19,12 @@ set(TF_MODEL_SOURCES
 	
 	${TF_DIR_SRC}/model/parse-util.hpp
 	${TF_DIR_SRC}/model/parse-util.cpp
+
+	${TF_DIR_SRC}/model/serialization/serialization.hpp
+	${TF_DIR_SRC}/model/serialization/serialization.cpp
+
+	${TF_DIR_SRC}/model/serialization/json-serialization.hpp
+	${TF_DIR_SRC}/model/serialization/json-serialization.cpp
 )
 
 add_library(taskforce.model ${TF_MODEL_SOURCES})
