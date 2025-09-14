@@ -1,7 +1,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "model/core/assert.hpp"
+#include "model/core/expect.hpp"
 
 #include "model/workspace.hpp"
 #include "model/time-entry.hpp"
@@ -160,7 +160,7 @@ namespace tf {
 
 int main() {
 
-    tf::s_assert_report_function = tf::report_assert_to_dialog;
+    tf::s_expect_report_function = tf::report_expect_to_dialog;
 
     test_json_serialization();
 

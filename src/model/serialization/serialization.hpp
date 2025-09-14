@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 
-#include "core/assert.hpp"
+#include "core/expect.hpp"
 
 namespace tf {
 

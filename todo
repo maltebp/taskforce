@@ -1,55 +1,40 @@
 This todo uses the format of the VS Code extension Todo+
-
-Implement assert function:
-    ✔ Make source_location work (untested)
-    ✔ Make it break if debugger is attached
-    ✔ Make it possible to customize printing
-        ✔ Standard print for unit tests
-        ✔ Dialog Box for UI
-
-Enter time entries:
-    ✔ Bug: you can enter invalid time input
-        ✔ Move Input code so it can be tested
-        
-        ✔ Setup test for input logic
-            ✔ Date
-            ✔ Start time
-            ✔ End time
         
 Serialization:
-    ☐ Figure out design
-    ☐ Simple JSON serializer
-    ☐ Write tests
+    ✔ Figure out design
+    ✔ Simple JSON serializer
+    ☐ More types
+        ☐ Double
+        ☐ Float
+    ☐ Error handling
+    ☐ Cleanup
+    Tests:
+        Do parameterized tests? Test per type of serializ
+        ☐ Each type
+        ☐ Invalid input
+        ☐ Invalid structure (custom serialization failing)
 
-☐ Setup package manager
-
-First prototype:
-
-    Edit data:
-            
-        ☐ Unit test time parsing
-            ☐ Understand gtest
-            ☐ Ensure test setup works (don't remember where I left off)
-            ☐ Write tests
-
-        ☐ Validate date
-        ☐ Commit data
-        ☐ Add "category"
-            ☐ Add "category system/concept
-            ☐ Add editable category from data (dropdown)
-        ☐ Split up time-entries-view.hpp
-        
+Workspace management:
+    ☐ Open Workspace menu
+    ☐ Save Workspace on key press (Ctrl+S)
     
-    Adding entry:
-        ☐ Shortcut
-        ☐ Add new entry
+Category column:
+    ☐ Validation (from hardcoded values for now)
+    ☐ Serialization
 
-    Data serialization:
-        ☐ Decide on format
-        ☐ Design serialization
-        ☐ Loading data
-        ☐ Saving data
-
+Summary:
+    ☐ Get days in current week
+    ☐ Summary page
+        Totals:
+            ☐ All categories (total time)
+            ☐ Per category
+            ☐ Missing hours
+        Averages per day:
+            ☐ All categories (total time)
+            ☐ Per category
+    ☐ Range
+        ☐ Today
+        ☐ This week
 
 What I want for first usable prototype:
     Easily put in time entries for what I work on
@@ -68,6 +53,15 @@ What I want for first usable prototype:
 
 
 Backlog:
+
+    Persistent state:
+    These are not "settings", but state of program specific to PC (e.g. recently opened projects)
+        ☐ Create API/system
+        ☐ Tests
+        ☐ Load
+        ☐ Save
+        ☐ Persistent state: re-open last project
+    ☐ Allow custom summary ranges
     ☐ Make Ctrl+Enter create new row even if a row is selected
     parse_util:
         parse_hours_minutes:
@@ -75,3 +69,5 @@ Backlog:
         parse_date:
             ☐ Auto input date if there is no year
     ☐ A cross-platform message box for asserts (not using ImGUI because it may not be initialized yet)
+    ☐ Setup package manager
+    

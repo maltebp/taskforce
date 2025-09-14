@@ -5,16 +5,14 @@
 #include <source_location>
 #include <string_view>
 
-#include "core/assert_handling.hpp"
-
-// TODO: Rename this to expect
+#include "core/expect_handling.hpp"
 
 namespace tf {
 
     namespace internal {
 
         /**
-         * @brief This should not be constructed manually but only used implicitly within \ref assert()
+         * @brief This should not be constructed manually but only used implicitly within \ref tf::expect()
         */
         struct FormatWithLocation {
             const char* message;
@@ -30,28 +28,28 @@ namespace tf {
     }
 
     template<typename ... TArgs>
-    [[noreturn]] static void expect(bool assertedValue, std::source_location source_location = {})
+    [[noreturn]] static void expect(bool expectedValue, std::source_location source_location = {})
     {
-        if( assertedValue ) return;
+        if( expectedValue ) return;
 
-        AssertInfo assert_info{ "", source_location };
-        tf::internal::report_assert(assert_info);
+        ExpectInfo expect_info{ "", source_location };
+        tf::internal::report_expect(expect_info);
     }
 
     template<typename ... TArgs>
     [[noreturn]] static void expect(
-        bool assertedValue,
+        bool expected,
         internal::FormatWithLocation formatWithLocation,
         TArgs... format_args)
     {
-        if( assertedValue ) return;
+        if( expected ) return;
 
         std::ostringstream formatted_message_stream{};
         formatted_message_stream << std::vformat(formatWithLocation.message, std::make_format_args(format_args...));
         std::string formatted_message = formatted_message_stream.str();
 
-        AssertInfo assert_info{ formatted_message, formatWithLocation.source_location };
-        tf::internal::report_assert(assert_info);
+        ExpectInfo expect_info{ formatted_message, formatWithLocation.source_location };
+        tf::internal::report_expect(expect_info);
     }
 
 }

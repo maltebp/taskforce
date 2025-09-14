@@ -6,27 +6,27 @@
 
 namespace tf {
 
-	struct AssertInfo {
+	struct ExpectInfo {
 		std::string_view message;
 		std::source_location& source_location;
 	};
 
 	namespace internal {
-		void report_assert(const AssertInfo&);
+		void report_expect(const ExpectInfo&);
 	}
 
 	/**
 	  * @brief The function which will be called to report an error. If a debugger is attached it
 	  * will break after this is called, and exit with an error after that. By default it will use
-	  * \ref report_assert_to_console()
+	  * \ref report_expect_to_console()
 	  */
-	extern std::function<void(const AssertInfo&)> s_assert_report_function;
+	extern std::function<void(const ExpectInfo&)> s_expect_report_function;
 
-	void report_assert_to_cerr(const AssertInfo&);
+	void report_expect_to_cerr(const ExpectInfo&);
 
 	/**
-	 * @brief Reports the assert to a cross-platform dialog.
+	 * @brief Reports the failed expect to a cross-platform dialog.
 	*/
-	void report_assert_to_dialog(const AssertInfo&);
+	void report_expect_to_dialog(const ExpectInfo&);
 }
 
