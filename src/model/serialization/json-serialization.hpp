@@ -92,24 +92,28 @@ namespace tf {
 			:	json(json)
 		{ }
 
-		std::optional<int> read_int(std::string_view name) const override {
+		template<typename TParsedType>
+		std::optional<TParsedType> read(std::string_view name) const {
+			
 			auto it = json.find(name);
 			if( it == json.end() ) return {};
-			 
+
 			const nlohmann::json& json_value = *it;
 
-			tf::expect(json_value.is_number_integer());
-			return json_value.template get<int>();
+			try {
+				return json_value.template get<TParsedType>();
+			}
+			catch( const nlohmann::json::type_error& e ) {
+				throw SerializationException(e.what());
+			}
+		}
+
+		std::optional<int> read_int(std::string_view name) const override {
+			return read<int>(name);
 		};
 
 		std::optional<std::string> read_string(std::string_view name) const override {
-			auto it = json.find(name);
-			if( it == json.end() ) return {};
-
-			const nlohmann::json& json_value = *it;
-
-			tf::expect(json_value.is_string());
-			return json_value.template get<std::string>();
+			return read<std::string>(name);
 		};
 
 		bool read_object(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const override {

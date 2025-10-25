@@ -1,5 +1,22 @@
 This todo uses the format of the VS Code extension Todo+
         
+Setup VS Code workflow:
+    ✔ Install Clang
+    ✔ Figure out how to use CMake + Clang
+    ✔ Get Clangd up and running
+    ✔ Write down notes on all of this
+    ☐ Get debugging to work
+        ✔ Get C/C++ extension working
+        ✔ Fix problem with LLDB missing python310.dll
+        ✔ Setup configuration file
+        ✔ Setup build task before debugging?
+        ✔ Update documentation
+        ✘ Setup for tests
+            I don't think I need this right now - will figure this out later
+    ☐ Set it up in Tundra
+
+☐ Make sure you cannot input reverse time
+
 Serialization:
     ✔ Figure out design
     ✔ Simple JSON serializer

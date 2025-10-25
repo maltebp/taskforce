@@ -4,6 +4,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(TF_CXX_STANDARD 20)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands for tooling")
+
 project(
 	taskforce
 	LANGUAGES    C CXX

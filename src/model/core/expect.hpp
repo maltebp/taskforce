@@ -28,7 +28,7 @@ namespace tf {
     }
 
     template<typename ... TArgs>
-    [[noreturn]] static void expect(bool expectedValue, std::source_location source_location = {})
+    static void expect(bool expectedValue, std::source_location source_location = {})
     {
         if( expectedValue ) return;
 

@@ -162,9 +162,8 @@ int main() {
 
     tf::s_expect_report_function = tf::report_expect_to_dialog;
 
-    test_json_serialization();
+    //test_json_serialization();
 
-    /*tf::initialize();
-
-    return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);*/
+    tf::initialize();
+    return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

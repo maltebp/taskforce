@@ -6,10 +6,23 @@
 #include <iterator>
 #include <vector>
 #include <functional>
+#include <exception>
 
 #include "core/expect.hpp"
 
 namespace tf {
+
+	class SerializationException : public std::runtime_error {
+	public:
+
+		SerializationException(std::string info)
+			:	std::runtime_error(info)
+		{ 
+			// TODO: Figure out how to rethrow (not sure how the scope of the nested exception works)
+			// We make want to add more specific exceptions in the future
+		}
+
+	};
 
 	class WritableObject;
 	class WritableList;
@@ -105,7 +118,7 @@ namespace tf {
 		template<typename T>
 		std::optional<T> read_optional(std::string_view name) const {
 			
-			std::optional<T> value;
+			std::optional<T> value{};
 			bool object_found = read_object(
 				name,
 				[&](const ReadableObject& object_to_read) {
@@ -114,7 +127,7 @@ namespace tf {
 				}
 			);
 
-			return value;
+			return object_found ? value : std::nullopt;
 		}
 
 		template<typename T>
