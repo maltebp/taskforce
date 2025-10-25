@@ -30,6 +30,8 @@ set_target_properties(gmock_main PROPERTIES FOLDER "external")
 set_target_properties(gtest PROPERTIES FOLDER "external")
 set_target_properties(gtest_main PROPERTIES FOLDER "external")
 
+target_compile_options(gtest PRIVATE -w)
+
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/model)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tests)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/app)
