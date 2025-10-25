@@ -5,6 +5,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(TF_CXX_STANDARD 20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Export compile commands for tooling")
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 project(
 	taskforce
@@ -22,7 +23,6 @@ get_filename_component(TF_DIR_SRC ${TF_DIR_ROOT}/src ABSOLUTE)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/json)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/imgui)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/directx)
 
 add_subdirectory(${TF_DIR_ROOT}/external/googletest ${TF_DIR_ROOT}/build/googletest)
 set_target_properties(gmock PROPERTIES FOLDER "external")

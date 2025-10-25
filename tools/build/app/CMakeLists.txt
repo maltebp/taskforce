@@ -29,7 +29,7 @@ set_target_properties(taskforce.app PROPERTIES
 target_link_libraries(taskforce.app 
 	PRIVATE taskforce.model
 	PRIVATE imgui
-	PUBLIC directx)
+	PUBLIC d3d11)
 
 target_include_directories(taskforce.app
 	PRIVATE ${TF_DIR_SRC})

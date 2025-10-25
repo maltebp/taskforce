@@ -13,9 +13,6 @@ set_target_properties(taskforce.tests PROPERTIES
 	CXX_STANDARD ${TF_CXX_STANDARD}
 )
 
-target_include_directories(taskforce.tests
-	PRIVATE ${TF_DIR_ROOT}/external/json/include)
-
 target_link_libraries(taskforce.tests
 	PRIVATE taskforce.model
 	PRIVATE gtest_main)

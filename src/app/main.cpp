@@ -24,7 +24,6 @@ struct MyStructA {
     MyStructB other_struct;
 };
 
-
 template<>
 struct tf::ObjectSerializer<MyStructB> {
 

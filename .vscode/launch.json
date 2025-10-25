@@ -1,22 +1,12 @@
 {
-
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "gdb",
-            "request": "attach",
-            "name": "Automated Tests (Redux, Debug)",
-            "target": "localhost:3333",
-            "remote": true,
-            "executable": "build\\playstation\\tests\\automated\\Debug\\td.playstation.tests.automated.elf",
-            "gdbpath": "external/gdb-multiarch/bin/gdb-multiarch",
-            "cwd": "${workspaceRoot}",
-            "autorun": [
-                "set substitute-path /project .",
-                "monitor reset shellhalt",
-                "load build/playstation/tests/automated/Debug/td.playstation.tests.automated.elf",
-            ],
-            "valuesFormatting": "prettyPrinters"
+            "type": "lldb",
+            "request": "launch",
+            "name": "Run with arguments",
+            "program": "${workspaceFolder}/build/app/taskforce.app.exe",
+            "cwd": "${workspaceFolder}"
         },
     ],
 }

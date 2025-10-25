@@ -18,9 +18,13 @@ set_target_properties(imgui PROPERTIES
 	CXX_STANDARD ${TF_CXX_STANDARD}
 )
 
+target_compile_options(imgui PRIVATE 
+	-w # Disable internal warnings in this external library
+)
+
 target_include_directories(imgui
-	PUBLIC ${TF_DIR_ROOT}/external/imgui/include
-	PRIVATE ${TF_DIR_ROOT}/external/imgui/src
+	SYSTEM PUBLIC ${TF_DIR_ROOT}/external/imgui/include
+	SYSTEM PRIVATE ${TF_DIR_ROOT}/external/imgui/src
 )
 
 set_target_properties(imgui PROPERTIES FOLDER "external")

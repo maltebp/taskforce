@@ -37,7 +37,7 @@ namespace tf {
     }
 
     template<typename ... TArgs>
-    [[noreturn]] static void expect(
+    static void expect(
         bool expected,
         internal::FormatWithLocation formatWithLocation,
         TArgs... format_args)
