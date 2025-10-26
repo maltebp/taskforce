@@ -1,5 +1,8 @@
 {
-    "C_Cpp.default.compileCommands": [
-        "${workspaceFolder}\\build\\"
-    ],
+    "C_Cpp.intelliSenseEngine": "disabled",    
+    "clangd.arguments": [
+        "-log=verbose", 
+        "-pretty",
+        "--compile-commands-dir=${workspaceFolder}\\build\\"
+    ]
 }
