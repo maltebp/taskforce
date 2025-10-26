@@ -19,7 +19,6 @@ namespace tf {
 	{ }
 
 	void TimeEntriesView::draw() {
-
         static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
 
         // When using ScrollX or ScrollY we need to specify a size for our table container!

@@ -45,7 +45,7 @@ namespace tf {
 
     bool TimeEntryInput::start_time_is_valid() const {
         std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_start_time);
-        return time.has_value();
+        return time.has_value() && time < m_time_entry->end_time;
     }
 
     bool TimeEntryInput::update_start_time() {
@@ -59,7 +59,7 @@ namespace tf {
 
     bool TimeEntryInput::end_time_is_valid() const {
         std::optional<std::chrono::minutes> time = parse_util::parse_hours_minutes(m_end_time);
-        return time.has_value();
+        return time.has_value() && time > m_time_entry->start_time;
     }
 
     bool TimeEntryInput::update_end_time() {
