@@ -1,12 +1,14 @@
 #pragma once
 
 #include <optional>
+#include <variant>
 #include <ostream>
 #include <string_view>
 #include <vector>
 #include <functional>
 
 #include "core/expect.hpp"
+#include "core/result.hpp"
 
 namespace tf {
 
@@ -210,11 +212,6 @@ namespace tf {
 	class Serializer {
 	public:
 
-		virtual void write(std::ostream& stream, std::function<void(WritableObject& root_object)> write_callback) = 0;
-
-		// TODO: Return proper error type here
-		virtual void read(std::istream& stream, std::function<void(const ReadableObject& root_object)> read_callback) = 0;
-
 		template<typename T>
 		void write_value(std::ostream& stream, const T& value) {
 			write(
@@ -226,23 +223,34 @@ namespace tf {
 			);
 		}
 
-		// TODO: Return proper error type here
 		template<typename T>
-		T read_value(std::istream& stream) {
-			T value;
-			
-			read(
-				stream,
-				[&](const ReadableObject& root_object) {
-					ObjectSerializer<T> object_serializer{};
-					value = object_serializer.read(root_object);
-				}
-			);
-
-			// TODO: Figure out how to avoid construction + assignment here
-			
-			return value;
+		Result<T> read_value(std::istream& stream) {	
+			try {
+				const ReadableObject& root_object = read(stream);
+				ObjectSerializer<T> object_serializer{};
+				T value = object_serializer.read(root_object);
+				reset();
+				return Result<T>::ok(std::move(value));
+			}
+			catch( SerializationException e ) {
+				return Error{e.what()};
+			}
 		}
+
+	protected:
+
+		virtual void write(std::ostream& stream, std::function<void(WritableObject& root_object)> write_callback) = 0;
+
+		/**
+		 * @return 
+		 * Reference to the last object read from this method. I.e. if this method is called again 
+		 * the reference of the old call now points to the object read from the new call. In other
+		 * words, this value should not be stored.
+		 */
+		[[nodiscard]] virtual const ReadableObject& read(std::istream& stream) = 0;
+
+		virtual void reset() = 0;
+
 	};
 
 

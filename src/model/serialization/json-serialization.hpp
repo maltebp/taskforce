@@ -83,7 +83,7 @@ namespace tf {
 
 	void JsonWritableObject::write_to_list(std::string_view name, std::function<void(WritableList& list)> write_callback) {
 		nlohmann::json& inserted_json_list = (json[name] = nlohmann::json::array());
-		
+
 		JsonWritableList writable_object{ inserted_json_list };
 		write_callback(writable_object);
 	}
@@ -196,6 +196,7 @@ namespace tf {
 
 		void write(std::ostream& stream, std::function<void(WritableObject& root_object)> write_callback) override {
 
+			
 			nlohmann::json root_json_object = nlohmann::json::object();
 			JsonWritableObject root_object{ root_json_object };
 			write_callback(root_object);
@@ -203,14 +204,28 @@ namespace tf {
 
 		}
 
-		void read(std::istream& stream, std::function<void(const ReadableObject& root_object)> read_callback) override {
+		[[nodiscard]] virtual const ReadableObject& read(std::istream& stream) override {
+			current_read_root_json_object.emplace();
+			stream >> current_read_root_json_object.value();
 			
-			nlohmann::json root_json_object;
-			stream >> root_json_object;
-			
-			JsonReadableObject root_object{ root_json_object };
-			read_callback(root_object);
+			current_read_root_object.emplace(current_read_root_json_object.value());
+			return current_read_root_object.value();
+		};
+
+		void reset() override {
+			current_read_root_json_object.reset();
+			current_read_root_object.reset();
 		}
+
+	private:
+
+		// These are held as optional, because (from what I could gather) the nlohmann::json will
+		// allocate json objects when deserializing and hold on to them for its life time. As the
+		// user of the serializer may hold on to object for a prolonged period of time, we want to
+		// be able clean it without destroying it. Could also be achieved with pointers, but
+		// std::optional avoids heap allocations.
+		std::optional<nlohmann::json> current_read_root_json_object;
+		std::optional<JsonReadableObject> current_read_root_object;
 
 	};
 

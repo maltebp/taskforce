@@ -80,18 +80,19 @@ void test_json_serialization() {
 
     std::istringstream istream{ output }; 
 
-    std::optional<MyStructA> a2 = serializer.read_value<MyStructA>(istream);
-    tf::expect(a2.has_value());
+    tf::Result<MyStructA> a2 = serializer.read_value<MyStructA>(istream);
 
-    tf::expect(a2.value().some_number == 42);
-    tf::expect(a2.value().some_string == "Hello, world!");
-    tf::expect(a2.value().some_numbers[0] == 1);
-    tf::expect(a2.value().some_numbers[1] == 2);
-    tf::expect(a2.value().some_numbers[2] == 3);
-    tf::expect(a2.value().some_numbers[3] == 4);
-    tf::expect(a2.value().other_struct.some_number == 1337);
+    tf::expect(a2.is_ok());
 
-    serializer.write_value(std::cout, a2.value());
+    tf::expect(a2.get_ok().some_number == 42);
+    tf::expect(a2.get_ok().some_string == "Hello, world!");
+    tf::expect(a2.get_ok().some_numbers[0] == 1);
+    tf::expect(a2.get_ok().some_numbers[1] == 2);
+    tf::expect(a2.get_ok().some_numbers[2] == 3);
+    tf::expect(a2.get_ok().some_numbers[3] == 4);
+    tf::expect(a2.get_ok().other_struct.some_number == 1337);
+
+    serializer.write_value(std::cout, a2.get_ok());
 }
 
 namespace tf {

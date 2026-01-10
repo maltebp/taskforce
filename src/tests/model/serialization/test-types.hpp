@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 #include <vector>
 #include <serialization/serialization.hpp>
-
 
 struct Primitives {
     bool operator ==(const Primitives& other) const {
@@ -113,10 +113,10 @@ template<>
 struct tf::ObjectSerializer<AllOptionalValues> {
 
     void write(tf::WritableObject& writable_object, const AllOptionalValues& value) {
-            writable_object.write("some_int", value.some_int);
-            writable_object.write("some_string", value.some_string);
-            writable_object.write("nested_primitives", value.nested_primitives),
-            writable_object.write("nested_list_of_primitives", value.nested_list_of_primitives.begin(), value.nested_list_of_primitives.end());
+        writable_object.write("some_int", value.some_int);
+        writable_object.write("some_string", value.some_string);
+        writable_object.write("nested_primitives", value.nested_primitives),
+        writable_object.write("nested_list_of_primitives", value.nested_list_of_primitives.begin(), value.nested_list_of_primitives.end());
     }
 
     AllOptionalValues read(const tf::ReadableObject& readable_object) {
@@ -126,6 +126,61 @@ struct tf::ObjectSerializer<AllOptionalValues> {
             readable_object.read_optional<Primitives>("nested_primitives").value_or(Primitives{-1,"empty"}),
             readable_object.read_optional_list<Primitives>("nested_list_of_primitives").value_or(std::vector{Primitives{-1,"empty"}})
         };
+    }
+
+};
+
+template<typename TDistinguisher>
+struct ConstructorTracker {
+
+    ConstructorTracker() {
+        num_default_called++;
+    }
+    
+    ConstructorTracker(const ConstructorTracker<TDistinguisher>& other)
+        : some_int(other.some_int)
+    { 
+        num_copies_called++;
+    }
+    
+    ConstructorTracker(ConstructorTracker<TDistinguisher>&& other) 
+        : some_int(other.some_int)
+    { 
+        other.some_int = -1;
+        num_moves_called++;
+    }
+
+    ConstructorTracker<TDistinguisher>& operator=(const ConstructorTracker<TDistinguisher>& other)
+    {
+        some_int = other.some_int;
+        return *this;
+    }
+
+    static void reset() {
+        num_default_called = 0;
+        num_copies_called = 0;
+        num_moves_called = 0;    
+    }
+
+    static inline int num_default_called = 0;
+    static inline int num_copies_called = 0;
+    static inline int num_moves_called = 0;
+
+    int some_int = 0; // Just so there is something to serialize
+
+};
+
+template<typename TDistinguisher>
+struct tf::ObjectSerializer<ConstructorTracker<TDistinguisher>> {
+
+    void write(tf::WritableObject& writable_object, const ConstructorTracker<TDistinguisher>& value) {
+        writable_object.write("some_int", value.some_int);
+    }
+
+    ConstructorTracker<TDistinguisher> read(const tf::ReadableObject& readable_object) {
+        ConstructorTracker<TDistinguisher> deserialized;
+        deserialized.some_int = readable_object.read<int>("some_int");
+        return deserialized;
     }
 
 };

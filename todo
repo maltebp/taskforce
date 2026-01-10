@@ -1,47 +1,23 @@
-This todo uses the format of the VS Code extension Todo+
-        
-Setup VS Code workflow:
-    ✔ Install Clang
-    ✔ Figure out how to use CMake + Clang
-    ✔ Get Clangd up and running
-    ✔ Write down notes on all of this
-    ✔ Get debugging to work
-        ✔ Get C/C++ extension working
-        ✔ Fix problem with LLDB missing python310.dll
-        ✔ Setup configuration file
-        ✔ Setup build task before debugging?
-        ✔ Update documentation
-        ✘ Setup for tests
-            I don't think I need this right now - will figure this out later
-    ✔ Write notes
-    ✔ Set it up in Taskforce
-
-✔ Remove build warnings
-✔ Add warnings as errors
-
-✔ Make sure you cannot input reverse time
-
-✔ Figure out why I can't watch an address in VS Code debugger
-✔ Figuring out if JSON objects have same adress in memory
-    They do!
-✘ Figure out how to return a WritableObject reference from create_sub_object
-    Reverting to use callback instead
-
 ☐ Fix crash in CodeLLDB 
     It keeps crashing during debugging with some weird error.
     It seems to have been fixed before
     https://github.com/llvm/llvm-project/issues/56184
 
-kSerialization:
+Serialization:
     ✔ Figure out design
     ✔ Simple JSON serializer
     ✔ Recap how I designed it
         ✔ Reconsider use of callback (e.g. WritableObject probably shouldn't use it)
+    ✔ Add tests for optional variants
+    ✔ Change return type of read
+        ✔ Add result
     ☐ More types
         ☐ Double
         ☐ Float
     ☐ Error handling
     ☐ Cleanup
+        ☐ No discard
+        ☐ Split into headers
     Tests:
         Do parameterized tests? Test per type of serializ
         ☐ Each type
