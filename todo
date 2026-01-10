@@ -19,11 +19,24 @@ Setup VS Code workflow:
 ✔ Remove build warnings
 ✔ Add warnings as errors
 
-☐ Make sure you cannot input reverse time
+✔ Make sure you cannot input reverse time
 
-Serialization:
+✔ Figure out why I can't watch an address in VS Code debugger
+✔ Figuring out if JSON objects have same adress in memory
+    They do!
+✘ Figure out how to return a WritableObject reference from create_sub_object
+    Reverting to use callback instead
+
+☐ Fix crash in CodeLLDB 
+    It keeps crashing during debugging with some weird error.
+    It seems to have been fixed before
+    https://github.com/llvm/llvm-project/issues/56184
+
+kSerialization:
     ✔ Figure out design
     ✔ Simple JSON serializer
+    ✔ Recap how I designed it
+        ✔ Reconsider use of callback (e.g. WritableObject probably shouldn't use it)
     ☐ More types
         ☐ Double
         ☐ Float

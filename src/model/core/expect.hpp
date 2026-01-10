@@ -1,9 +1,8 @@
 #pragma once
 
-#include <functional>
+#include <sstream>
 #include <format>
 #include <source_location>
-#include <string_view>
 
 #include "core/expect_handling.hpp"
 
@@ -28,7 +27,7 @@ namespace tf {
     }
 
     template<typename ... TArgs>
-    static void expect(bool expectedValue, std::source_location source_location = {})
+    static void expect(bool expectedValue, std::source_location source_location = std::source_location::current())
     {
         if( expectedValue ) return;
 

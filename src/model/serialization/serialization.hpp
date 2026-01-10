@@ -1,12 +1,10 @@
 #pragma once
 
-
+#include <optional>
 #include <ostream>
 #include <string_view>
-#include <iterator>
 #include <vector>
 #include <functional>
-#include <exception>
 
 #include "core/expect.hpp"
 
@@ -28,6 +26,7 @@ namespace tf {
 	class WritableList;
 	class ReadableObject;
 
+	// TODO: Comment here
 	template<typename T>
 	struct ObjectSerializer {
 
@@ -42,7 +41,7 @@ namespace tf {
 
 	class WritableObject {
 	public:
-		// TODO: Implement rest of writes
+		// TODO: Implement rest of write
 
 		virtual void write(std::string_view name, int value) = 0;
 
@@ -50,25 +49,33 @@ namespace tf {
 
 		void write(std::string_view name, const std::string& value) { write(name, std::string_view{ value }); }
 
+		// TODO: Use concept here (+figure out if we can have static test tests whether parameters are)
 		template<typename TIterator>
 		void write(std::string_view name, TIterator begin, TIterator end);
 
 		template<typename T>
 		void write(std::string_view name, const T& value) {
 			write_to_object(
-				name, 
-				[&value](WritableObject& object) { 
+				name,
+				 [&](WritableObject& sub_object) {
+					// Why the callback: the serialization implementation must be able to construct
+					// a derived version of WritableObject, which is then the object written to. A
+					// function that creates such a derived WritableObject would have to return it 
+					// by reference/pointer, but in order to ensure it stays alive for the writing
+					// scope, it would have heap allocate (or do other, more complicated tricks).
+					// It is my assumption that this lambda here will not cause a heap allocation.
+
 					ObjectSerializer<T> serializer;
-					serializer.write(object, value);
+					serializer.write(sub_object, value);
 				}
 			);
 		}
 
 	protected:
 
-		virtual void write_to_object(std::string_view name, std::function<void(WritableObject& object)> write_callback) = 0;
+		virtual void write_to_object(std::string_view name, std::function<void(WritableObject&)> write_callback ) = 0;
 
-		virtual void write_to_list(std::string_view name, std::function<void(WritableList& object)> write_callback) = 0;
+		virtual void write_to_list(std::string_view name, std::function<void(WritableList&)> write_callback ) = 0;
 
 	};
 
@@ -79,10 +86,14 @@ namespace tf {
 
 		virtual void write(std::string_view value) = 0;
 
+		void write(const std::string& value) {
+			write(static_cast<std::string_view>(value));
+		}
+
 		template<typename TIterator>
 		void write(TIterator begin, TIterator end) {
 			write_to_list(
-				[&begin, &end](WritableList& list) {
+				[&](WritableList& list) {
 					for( ; begin != end; begin++ ) {
 						list.write(*begin);
 					}
@@ -98,9 +109,9 @@ namespace tf {
 		template<typename T>
 		void write(const T& value) {
 			write_to_object(
-				[&value](WritableList& list) {
+				[&value](WritableObject& object) {
 					ObjectSerializer<T> serializer;
-					serializer.write(list, value);
+					serializer.write(object, value);
 				});
 		}
 
@@ -133,7 +144,9 @@ namespace tf {
 		template<typename T>
 		T read(std::string_view name) const {
 			std::optional<T> value = read_optional<T>(name);
-			tf::expect(value.has_value()); // TODO: Change to exception
+			
+			if( !value.has_value() ) throw SerializationException("Property " + std::string(name) + " does not exist");
+			
 			return value.value();
 		}
 
@@ -145,16 +158,20 @@ namespace tf {
 
 			bool property_existed = read_object_list(
 				name,
-				[&](ReadableObject& readable_object) {
-					values.push_back(serializer.read()); // TODO: Move instead
+				[&](const ReadableObject& readable_object) {
+					values.push_back(serializer.read(readable_object)); // TODO: Move instead
 				}
 			);
 
-			return property_existed ? values : std::nullopt;
+			if( !property_existed ) return std::nullopt;
+
+			return values;
 		}
 
 		template<typename T>
 		std::vector<T> read_list(std::string_view name) const {
+			// TODO: It is an annoying pattern that this is not just read() as well - figure out if I can fix this
+
 			std::optional<std::vector<T>> values = read_optional_list<T>(name);
 			tf::expect(values.has_value()); // TODO: Change to exception
 			return values.value();
@@ -195,6 +212,9 @@ namespace tf {
 
 		virtual void write(std::ostream& stream, std::function<void(WritableObject& root_object)> write_callback) = 0;
 
+		// TODO: Return proper error type here
+		virtual void read(std::istream& stream, std::function<void(const ReadableObject& root_object)> read_callback) = 0;
+
 		template<typename T>
 		void write_value(std::ostream& stream, const T& value) {
 			write(
@@ -205,9 +225,6 @@ namespace tf {
 				}
 			);
 		}
-
-		// TODO: Return proper error type here
-		virtual void read(std::istream& stream, std::function<void(const ReadableObject& root_object)> read_callback) = 0;
 
 		// TODO: Return proper error type here
 		template<typename T>
@@ -222,9 +239,10 @@ namespace tf {
 				}
 			);
 
+			// TODO: Figure out how to avoid construction + assignment here
+			
 			return value;
 		}
-
 	};
 
 

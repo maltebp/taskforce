@@ -1,13 +1,14 @@
 #include <chrono>
 #include <iostream>
 
+#include <json.hpp>
+
 #include "model/core/expect.hpp"
 
 #include "model/workspace.hpp"
 #include "model/time-entry.hpp"
 #include "model/serialization/json-serialization.hpp"
 
-#include "app/imgui-app.hpp"
 #include "app/views/main-window.hpp"
 
 using namespace std::chrono_literals;
@@ -161,8 +162,8 @@ int main() {
 
     tf::s_expect_report_function = tf::report_expect_to_dialog;
 
-    //test_json_serialization();
+    test_json_serialization();
 
-    tf::initialize();
-    return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
+    //tf::initialize();
+    //return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

@@ -52,7 +52,7 @@ namespace tf {
 
         message_stream
             << std::vformat(
-                std::string("Invalid value found at\n{}\nin\n{}:{},{}"),
+                std::string("Invalid value found in function \n'{}'\nin file\n'{}' (line {}, column {})"),
                 std::make_format_args(
                     expect_info.source_location.function_name(),
                     expect_info.source_location.file_name(),

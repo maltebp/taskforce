@@ -22,8 +22,11 @@ namespace tf {
 		}
 
 	protected:
-
-		void write_to_object(std::string_view name, std::function<void(WritableObject& object)> write_callback) override;
+	
+		void write_to_object(
+			std::string_view name, 
+			std::function<void(WritableObject& object)> write_callback
+		) override;
 
 		void write_to_list(std::string_view name, std::function<void(WritableList& list)> write_callback) override;
 
@@ -36,6 +39,7 @@ namespace tf {
 	class JsonWritableList : public WritableList {
 	public:
 
+		
 		JsonWritableList(nlohmann::json& json)
 			: json(json)
 		{ }
@@ -71,19 +75,18 @@ namespace tf {
 	};
 
 	void JsonWritableObject::write_to_object(std::string_view name, std::function<void(WritableObject& object)> write_callback) {
-		nlohmann::json json_object = nlohmann::json::object();
-		JsonWritableObject sub_object{ json_object };
-		write_callback(sub_object);
-		json[name] = std::move(json_object);
+		nlohmann::json& inserted_json_object = (json[name] = nlohmann::json::object());
+		
+		JsonWritableObject writable_object{ inserted_json_object };
+		write_callback(writable_object);
 	}
 
 	void JsonWritableObject::write_to_list(std::string_view name, std::function<void(WritableList& list)> write_callback) {
-		nlohmann::json json_list = nlohmann::json::array();
-		JsonWritableList sub_list{ json_list };
-		write_callback(sub_list);
-		json[name] = std::move(json_list);
+		nlohmann::json& inserted_json_list = (json[name] = nlohmann::json::array());
+		
+		JsonWritableList writable_object{ inserted_json_list };
+		write_callback(writable_object);
 	}
-
 
 	class JsonReadableObject : public ReadableObject {
 	public:
@@ -212,5 +215,3 @@ namespace tf {
 	};
 
 }
-
-
