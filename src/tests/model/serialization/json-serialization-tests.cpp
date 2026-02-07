@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "serialization/json-serialization.hpp"
-#include "serialization/serialization.hpp"
 
+#include "serialization/json/json-serializer.hpp"
 #include "model/serialization/test-types.hpp"
 
 
@@ -11,15 +10,17 @@ void write_then_read_and_assert(const T& object_to_serialize) {
     tf::JsonSerializer serializer;
     
     std::ostringstream ostream;
-    serializer.write_value(ostream, object_to_serialize);
+    tf::Result<void> write_result = serializer.write(ostream, object_to_serialize);
+    ASSERT_TRUE(write_result.is_ok());
 
     std::string output= ostream.str();
     std::istringstream istream{ output }; 
 
-    tf::Result<T> read_result = serializer.read_value<T>(istream);
-    
-    ASSERT_TRUE(read_result.is_ok()) << read_result.get_err().info;
-	ASSERT_EQ(read_result.get_ok(), object_to_serialize);
+    tf::Result<T> read_result = serializer.read<T>(istream);
+
+    ASSERT_TRUE(read_result.is_ok());
+    T& read_object = read_result.get_ok();
+	ASSERT_EQ(read_object, object_to_serialize);
 }
 
 TEST(json_serialization, primitive_values) {
@@ -71,12 +72,13 @@ TEST(json_serialization, error_on_wrong_object_deserialized) {
     tf::JsonSerializer serializer;
 
     std::ostringstream ostream;
-    serializer.write_value(ostream, object_to_serialize);
+    tf::Result<void> write_result = serializer.write(ostream, object_to_serialize);
+    ASSERT_TRUE(write_result.is_ok());
 
     std::string output= ostream.str();
     std::istringstream istream{ output };
 
-    tf::Result<NestingTypes> read_result = serializer.read_value<NestingTypes>(istream);
+    tf::Result<NestingTypes> read_result = serializer.read<NestingTypes>(istream);
     ASSERT_TRUE(read_result.is_err());
 }
 
@@ -99,8 +101,7 @@ TEST(json_serialization, optional_values) {
     std::string empty_json = "{ }";
     std::istringstream istream{ empty_json };
 
-    tf::Result<AllOptionalValues> read_result = serializer.read_value<AllOptionalValues>(istream);
-    ASSERT_TRUE(read_result.is_ok()) << read_result.get_err().info;
+    tf::Result<AllOptionalValues> read_result = serializer.read<AllOptionalValues>(istream);
     
     AllOptionalValues& deserialized = read_result.get_ok();
 
@@ -133,7 +134,8 @@ TEST(json_serialization, construction_call_check) {
     tf::JsonSerializer serializer;
     
     std::ostringstream ostream;
-    serializer.write_value(ostream, object_to_serialize);
+    tf::Result<void> write_result = serializer.write(ostream, object_to_serialize);
+    ASSERT_TRUE(write_result.is_ok());
 
     ASSERT_EQ(1, ConstructorTracker<Distinguisher>::num_default_called);
     ASSERT_EQ(0, ConstructorTracker<Distinguisher>::num_copies_called);
@@ -141,14 +143,13 @@ TEST(json_serialization, construction_call_check) {
 
     std::istringstream istream{ ostream.str() }; 
 
-    tf::Result<ConstructorTracker<Distinguisher>> read_result = serializer.read_value<ConstructorTracker<Distinguisher>>(istream);
-    //ASSERT_TRUE(read_result.is_ok()) << read_result.get_err().info;
+    tf::Result<ConstructorTracker<Distinguisher>> read_result = serializer.read<ConstructorTracker<Distinguisher>>(istream);
+    [[maybe_unused]] ConstructorTracker<Distinguisher>& deserialized = read_result.get_ok();
+
 
     ASSERT_EQ(2, ConstructorTracker<Distinguisher>::num_default_called);
     ASSERT_EQ(0, ConstructorTracker<Distinguisher>::num_copies_called);
     ASSERT_EQ(1, ConstructorTracker<Distinguisher>::num_moves_called);
-    
-    ConstructorTracker<Distinguisher>& deserialized = read_result.get_ok();
     
 	ASSERT_EQ(object_to_serialize.some_int, deserialized.some_int);
  

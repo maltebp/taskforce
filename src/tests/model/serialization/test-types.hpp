@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
-#include <type_traits>
 #include <vector>
-#include <serialization/serialization.hpp>
+
+#include "serialization/object-serializer.hpp"
 
 struct Primitives {
     bool operator ==(const Primitives& other) const {
@@ -56,8 +56,8 @@ struct tf::ObjectSerializer<ListsOfPrimitives> {
 
     ListsOfPrimitives read(const tf::ReadableObject& readable_object) {
         return ListsOfPrimitives{
-            readable_object.read_list<int>("some_ints"),
-            readable_object.read_list<std::string>("some_strings")
+            readable_object.read<std::vector<int>>("some_ints"),
+            readable_object.read<std::vector<std::string>>("some_strings")
         };
     }
 
@@ -87,7 +87,7 @@ struct tf::ObjectSerializer<NestingTypes> {
     NestingTypes read(const tf::ReadableObject& readable_object) {
         return NestingTypes{
             readable_object.read<Primitives>("nested_primitives"),
-            readable_object.read_list<Primitives>("nested_list_of_primitives")  
+            readable_object.read<std::vector<Primitives>>("nested_list_of_primitives")  
         };
     }
 
@@ -124,7 +124,7 @@ struct tf::ObjectSerializer<AllOptionalValues> {
             readable_object.read_optional<int>("some_int").value_or(-1),
             readable_object.read_optional<std::string>("some_string").value_or("empty"),
             readable_object.read_optional<Primitives>("nested_primitives").value_or(Primitives{-1,"empty"}),
-            readable_object.read_optional_list<Primitives>("nested_list_of_primitives").value_or(std::vector{Primitives{-1,"empty"}})
+            readable_object.read_optional<std::vector<Primitives>>("nested_list_of_primitives").value_or(std::vector{Primitives{-1,"empty"}})
         };
     }
 

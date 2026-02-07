@@ -7,7 +7,7 @@
 
 #include "model/workspace.hpp"
 #include "model/time-entry.hpp"
-#include "model/serialization/json-serialization.hpp"
+#include "model/serialization/json/json-serializer.hpp"
 
 #include "app/views/main-window.hpp"
 
@@ -54,7 +54,7 @@ struct tf::ObjectSerializer<MyStructA> {
         MyStructA a;
         a.some_number = readable_object.read<int>("some_number");
         a.some_string = readable_object.read<std::string>("some_string");
-        a.some_numbers = readable_object.read_list<int>("some_numbers");
+        a.some_numbers = readable_object.read<std::vector<int>>("some_numbers");
         a.other_struct = readable_object.read<MyStructB>("other_struct");
         return a;
     }
@@ -72,7 +72,11 @@ void test_json_serialization() {
     std::ostringstream ostream;
 
     tf::JsonSerializer serializer{};
-    serializer.write_value(ostream, a);
+    tf::Result<void> write_result = serializer.write(ostream, a);
+    if (write_result.is_err()) {
+        std::cerr << "Failed to write object" << std::endl;
+        return;
+    }
 
     std::string output= ostream.str();
 
@@ -80,7 +84,7 @@ void test_json_serialization() {
 
     std::istringstream istream{ output }; 
 
-    tf::Result<MyStructA> a2 = serializer.read_value<MyStructA>(istream);
+    tf::Result<MyStructA> a2 = serializer.read<MyStructA>(istream);
 
     tf::expect(a2.is_ok());
 
@@ -92,7 +96,11 @@ void test_json_serialization() {
     tf::expect(a2.get_ok().some_numbers[3] == 4);
     tf::expect(a2.get_ok().other_struct.some_number == 1337);
 
-    serializer.write_value(std::cout, a2.get_ok());
+    tf::Result<void> write_result_2 = serializer.write(std::cout, a2.get_ok());
+       if( write_result_2.is_err() ) {
+        std::cerr << "Failed to write object" << std::endl;
+        return;
+    }
 }
 
 namespace tf {

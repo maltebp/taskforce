@@ -3,14 +3,10 @@
     It seems to have been fixed before
     https://github.com/llvm/llvm-project/issues/56184
 
+☐ Get DoxyGen version of Clang
+
 Serialization:
-    ✔ Figure out design
-    ✔ Simple JSON serializer
-    ✔ Recap how I designed it
-        ✔ Reconsider use of callback (e.g. WritableObject probably shouldn't use it)
-    ✔ Add tests for optional variants
-    ✔ Change return type of read
-        ✔ Add result
+    ☐ Rework reading of lists
     ☐ More types
         ☐ Double
         ☐ Float
