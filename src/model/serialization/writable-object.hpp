@@ -10,15 +10,14 @@ namespace tf {
 
     class WritableObject {
 	public:
-		// TODO: Implement rest of write
-
+	
 		virtual void write(std::string_view name, int value) = 0;
 
 		virtual void write(std::string_view name, std::string_view value) = 0;
 
 		void write(std::string_view name, const std::string& value) { write(name, std::string_view{ value }); }
 
-		// TODO: Use concept here (+figure out if we can have static test tests whether parameters are)
+		
 		template<typename TIterator>
 		void write(std::string_view name, TIterator begin, TIterator end)
 		{

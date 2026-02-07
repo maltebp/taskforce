@@ -6,14 +6,15 @@
 ☐ Get DoxyGen version of Clang
 
 Serialization:
-    ☐ Rework reading of lists
+    ✔ Rework reading of lists
+    ✔ Cleanup
+        ✔ No discard
+        ✔ Split into headers
+    ☐ Cleanup todos
     ☐ More types
         ☐ Double
         ☐ Float
-    ☐ Error handling
-    ☐ Cleanup
-        ☐ No discard
-        ☐ Split into headers
+    
     Tests:
         Do parameterized tests? Test per type of serializ
         ☐ Each type
@@ -41,6 +42,9 @@ Summary:
     ☐ Range
         ☐ Today
         ☐ This week
+
+☐ Introduce a Concept for iterators (e.g. use it in WritableObject)
+    https://stackoverflow.com/questions/4335962/how-to-check-if-a-template-parameter-is-an-iterator-type-or-not
 
 What I want for first usable prototype:
     Easily put in time entries for what I work on

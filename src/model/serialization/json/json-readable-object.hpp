@@ -62,12 +62,19 @@ namespace tf {
 			if( it == json.end() ) return {};
 
 			const nlohmann::json& list = *it;
-			tf::expect(list.is_array()); // TODO: change to exception
+			if( !list.is_array() ) {
+				throw new SerializationException(
+					"Property '" + std::string(name) + "' is not a list, but a " + list.type_name());
+			}
 
 			std::vector<int> values;
 			for( const nlohmann::json& value : list ) {
 
-				tf::expect(value.is_number_integer()); // TODO: Change to exception
+				if( !value.is_number_integer() ) {
+					throw new SerializationException(
+						"Property '" + std::string(name) + "' is not an integer, but a " + value.type_name());
+				}
+
 				values.push_back(value.template get<int>());
 			}
 
@@ -79,12 +86,19 @@ namespace tf {
 			if( it == json.end() ) return {};
 
 			const nlohmann::json& list = *it;
-			tf::expect(list.is_array()); // TODO: change to exception
+			if( !list.is_array() ) {
+				throw new SerializationException(
+					"Property '" + std::string(name) + "' is not a list, but a " + list.type_name());
+			}
 
 			std::vector<std::string> values;
 			for( const nlohmann::json& value : list ) {
 
-				tf::expect(value.is_string()); // TODO: Change to exception
+				if( !value.is_string() ) {
+					throw new SerializationException(
+						"Property '" + std::string(name) + "' is not a string, but a " + value.type_name());
+				}
+				
 				values.push_back(value.template get<std::string>());
 			}
 
@@ -96,11 +110,18 @@ namespace tf {
 			if( it == json.end() ) return false;
 
 			const nlohmann::json& list = *it;
-			tf::expect(list.is_array()); // TODO: change to exception
+			if( !list.is_array() ) {
+				throw new SerializationException(
+					"Property '" + std::string(name) + "' is not a list, but a " + list.type_name());
+			}
 
 			for( const nlohmann::json& value : list ) {
 
-				tf::expect(value.is_object()); // TODO: Change to exception
+				if( !value.is_object() ) {
+					throw new SerializationException(
+						"Property '" + std::string(name) + "' is not an object, but a " + value.type_name());
+				}
+				
 				JsonReadableObject value_object{ value };
 
 				read_callback(value_object);
