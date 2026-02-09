@@ -7,6 +7,8 @@ set(TF_MODEL_SOURCES
 	${TF_DIR_SRC}/model/core/expect_handling.hpp
 	${TF_DIR_SRC}/model/core/expect_handling.cpp
 
+	${TF_DIR_SRC}/model/core/false_type.hpp
+
 	${TF_DIR_SRC}/model/core/string-util.hpp
 	${TF_DIR_SRC}/model/core/string-util.cpp
 

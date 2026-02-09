@@ -66,7 +66,7 @@ namespace tf {
 			name,
 			[&](const ReadableObject& object_to_read) {
 				ObjectSerializer<T> object_serializer{};
-				value = object_serializer.read(object_to_read);
+				value = std::move(object_serializer.read(object_to_read));
 			}
 		);
 
