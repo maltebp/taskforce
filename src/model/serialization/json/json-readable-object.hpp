@@ -6,7 +6,6 @@
 
 #include <json.hpp>
 
-#include "core/expect.hpp"
 #include "serialization/serialization-exception.hpp"
 #include "serialization/readable-object.hpp"
 
@@ -35,12 +34,71 @@ namespace tf {
 			}
 		}
 
-		std::optional<int> read_int(std::string_view name) const override {
-			return read<int>(name);
+		template<typename TElementType>
+		std::optional<std::vector<TElementType>> read_list(std::string_view name) const {
+
+			auto it = json.find(name);
+			if( it == json.end() ) return {};
+
+			const nlohmann::json& json_object = *it;
+			if( !json_object.is_array() ) {
+				throw new SerializationException(
+					"Property '" + std::string(name) + "' is not a list, but a " + json_object.type_name());
+			}
+
+			std::vector<TElementType> values;
+			try {
+
+				// Ther emust be a more efficient way to parse a list
+				for( const nlohmann::json& value : json_object ) {
+					values.push_back(value.template get<TElementType>());
+				}
+			
+			} catch( const nlohmann::json::type_error& e ) {
+				throw SerializationException(e.what());
+			}
+
+			return values;
+		}
+
+		std::optional<std::int32_t> read_int32(std::string_view name) const override {
+			return read<int32_t>(name);
+		}
+
+		std::optional<std::vector<std::int32_t>> read_int32_list(std::string_view name) const override {
+			return read_list<std::int32_t>(name);
+		};
+
+		std::optional<std::int64_t> read_int64(std::string_view name) const override {
+			return read<int64_t>(name);
+		};
+
+		std::optional<std::vector<std::int64_t>> read_int64_list(std::string_view name) const override {
+			return read_list<std::int64_t>(name);
+		};
+
+		std::optional<float> read_float32(std::string_view name) const override {
+			return read<float>(name);
+		};
+
+		std::optional<std::vector<float>> read_float32_list(std::string_view name) const override {
+			return read_list<float>(name);
+		};
+
+		std::optional<double> read_float64(std::string_view name) const override {
+			return read<double>(name);
+		};
+
+		std::optional<std::vector<double>> read_float64_list(std::string_view name) const override {
+			return read_list<double>(name);
 		};
 
 		std::optional<std::string> read_string(std::string_view name) const override {
 			return read<std::string>(name);
+		};
+
+		std::optional<std::vector<std::string>> read_string_list(std::string_view name) const override {
+			return read_list<std::string>(name);
 		};
 
 		bool read_object(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const override {
@@ -54,55 +112,6 @@ namespace tf {
 			read_callback(object);
 
 			return true;
-		};
-
-		std::optional<std::vector<int>> read_int_list(std::string_view name) const override {
-
-			auto it = json.find(name);
-			if( it == json.end() ) return {};
-
-			const nlohmann::json& list = *it;
-			if( !list.is_array() ) {
-				throw new SerializationException(
-					"Property '" + std::string(name) + "' is not a list, but a " + list.type_name());
-			}
-
-			std::vector<int> values;
-			for( const nlohmann::json& value : list ) {
-
-				if( !value.is_number_integer() ) {
-					throw new SerializationException(
-						"Property '" + std::string(name) + "' is not an integer, but a " + value.type_name());
-				}
-
-				values.push_back(value.template get<int>());
-			}
-
-			return values;
-		};
-
-		std::optional<std::vector<std::string>> read_string_list(std::string_view name) const override {
-			auto it = json.find(name);
-			if( it == json.end() ) return {};
-
-			const nlohmann::json& list = *it;
-			if( !list.is_array() ) {
-				throw new SerializationException(
-					"Property '" + std::string(name) + "' is not a list, but a " + list.type_name());
-			}
-
-			std::vector<std::string> values;
-			for( const nlohmann::json& value : list ) {
-
-				if( !value.is_string() ) {
-					throw new SerializationException(
-						"Property '" + std::string(name) + "' is not a string, but a " + value.type_name());
-				}
-				
-				values.push_back(value.template get<std::string>());
-			}
-
-			return values;
 		};
 
 		bool read_object_list(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const override {

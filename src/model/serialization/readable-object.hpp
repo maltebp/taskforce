@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <optional>
+#include <cstdint>
 
 #include "serialization/serialization-exception.hpp"
 #include "serialization/object-serializer.hpp"
@@ -43,15 +44,27 @@ namespace tf {
 
 	protected:
 
-		virtual std::optional<int> read_int(std::string_view name) const = 0;
+		virtual std::optional<std::int32_t> read_int32(std::string_view name) const = 0;
+
+		virtual std::optional<std::vector<std::int32_t>> read_int32_list(std::string_view name) const = 0;
+
+		virtual std::optional<std::int64_t> read_int64(std::string_view name) const = 0;
+
+		virtual std::optional<std::vector<std::int64_t>> read_int64_list(std::string_view name) const = 0;
+
+		virtual std::optional<float> read_float32(std::string_view name) const = 0;
+
+		virtual std::optional<std::vector<float>> read_float32_list(std::string_view name) const = 0;
+
+		virtual std::optional<double> read_float64(std::string_view name) const = 0;
+
+		virtual std::optional<std::vector<double>> read_float64_list(std::string_view name) const = 0;
 
 		virtual std::optional<std::string> read_string(std::string_view name) const = 0;
 
-		virtual bool read_object(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const = 0;
-
-		virtual std::optional<std::vector<int>> read_int_list(std::string_view name) const = 0;
-
 		virtual std::optional<std::vector<std::string>> read_string_list(std::string_view name) const = 0;
+
+		virtual bool read_object(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const = 0;
 
 		virtual bool read_object_list(std::string_view name, std::function<void(const ReadableObject&)> read_callback) const = 0;
 
@@ -98,10 +111,31 @@ namespace tf {
 	// Type specializations
 
 	template<>
-	inline std::optional<int> ReadableObject::ReadProxy<int>::read_optional(
+	inline std::optional<std::int32_t> ReadableObject::ReadProxy<std::int32_t>::read_optional(
 		const ReadableObject& readable_object, std::string_view name
 	) { 
-		return readable_object.read_int(name);
+		return readable_object.read_int32(name);
+	}	
+
+	template<>
+	inline std::optional<std::vector<std::int32_t>> ReadableObject::ReadProxy<std::vector<std::int32_t>>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_int32_list(name);
+	}
+
+	template<>
+	inline std::optional<std::int64_t> ReadableObject::ReadProxy<std::int64_t>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_int64(name);
+	}
+
+	template<>
+	inline std::optional<std::vector<std::int64_t>> ReadableObject::ReadProxy<std::vector<std::int64_t>>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_int64_list(name);
 	}
 	
 	template<>
@@ -110,14 +144,6 @@ namespace tf {
 	) { 
 		return readable_object.read_string(name);
 	}
-
-	template<>
-	inline std::optional<std::vector<int>> ReadableObject::ReadProxy<std::vector<int>>::read_optional(
-		const ReadableObject& readable_object, std::string_view name
-	) { 
-		return readable_object.read_int_list(name);
-	}
-
 	template<>
 	inline std::optional<std::vector<std::string>> 
 	ReadableObject::ReadProxy<std::vector<std::string>>::read_optional(

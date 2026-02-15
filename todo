@@ -10,10 +10,11 @@ Serialization:
     ✔ Cleanup
         ✔ No discard
         ✔ Split into headers
-    ☐ Cleanup todos
-    ☐ More types
-        ☐ Double
-        ☐ Float
+    ✔ Cleanup todos
+    ✔ More types
+        ✔ Double
+        ✔ Float
+        ☐ Write tests for new types
     
     Tests:
         Do parameterized tests? Test per type of serializ
