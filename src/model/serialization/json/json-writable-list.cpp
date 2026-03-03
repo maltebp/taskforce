@@ -8,7 +8,19 @@ namespace tf {
         : json(json)
     { }
 
-    void JsonWritableList::write(int value) {
+    void JsonWritableList::write(std::int32_t value) {
+        json.push_back(value);
+    }
+
+    void JsonWritableList::write(std::int64_t value) {
+        json.push_back(value);
+    }
+
+    void JsonWritableList::write(float value) {
+        json.push_back(value);
+    }
+
+    void JsonWritableList::write(double value) {
         json.push_back(value);
     }
 

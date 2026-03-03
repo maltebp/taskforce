@@ -11,13 +11,18 @@ namespace tf {
     class WritableObject {
 	public:
 	
-		virtual void write(std::string_view name, int value) = 0;
+		virtual void write(std::string_view name, std::int32_t value) = 0;
+
+		virtual void write(std::string_view name, std::int64_t value) = 0;
+
+		virtual void write(std::string_view name, float value) = 0;
+
+		virtual void write(std::string_view name, double value) = 0;
 
 		virtual void write(std::string_view name, std::string_view value) = 0;
 
 		void write(std::string_view name, const std::string& value) { write(name, std::string_view{ value }); }
 
-		
 		template<typename TIterator>
 		void write(std::string_view name, TIterator begin, TIterator end)
 		{

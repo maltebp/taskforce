@@ -12,7 +12,13 @@ namespace tf {
 
         JsonWritableObject(nlohmann::json& json);
 
-        void write(std::string_view name, int value) override;
+        void write(std::string_view name, std::int32_t value) override;
+
+		void write(std::string_view name, std::int64_t value) override;
+
+		void write(std::string_view name, float value) override;
+
+		void write(std::string_view name, double value) override;
 
         void write(std::string_view name, std::string_view value) override;
 

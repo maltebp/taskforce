@@ -88,6 +88,7 @@ namespace tf {
 
 	template<typename T>
 	struct ReadableObject::ReadProxy<std::vector<T>> {
+		// This partial specialization is the purpose of having ReadProxy
 	
 		static std::optional<std::vector<T>> read_optional(
 			const ReadableObject& readable_object, std::string_view name
@@ -136,6 +137,34 @@ namespace tf {
 		const ReadableObject& readable_object, std::string_view name
 	) { 
 		return readable_object.read_int64_list(name);
+	}
+
+	template<>
+	inline std::optional<float> ReadableObject::ReadProxy<float>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_float32(name);
+	}
+
+	template<>
+	inline std::optional<std::vector<float>> ReadableObject::ReadProxy<std::vector<float>>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_float32_list(name);
+	}
+
+	template<>
+	inline std::optional<double> ReadableObject::ReadProxy<double>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_float64(name);
+	}
+
+	template<>
+	inline std::optional<std::vector<double>> ReadableObject::ReadProxy<std::vector<double>>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_float64_list(name);
 	}
 	
 	template<>

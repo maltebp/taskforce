@@ -12,8 +12,10 @@ namespace tf {
 		
 		JsonWritableList(nlohmann::json& json);
 
-		void write(int value) override;
-
+		void write(std::int32_t value) override;
+		void write(std::int64_t value) override;
+		void write(float value) override;
+		void write(double value) override;
 		void write(std::string_view value) override;
 
 	protected:

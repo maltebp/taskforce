@@ -26,7 +26,10 @@ void write_then_read_and_assert(const T& object_to_serialize) {
 TEST(json_serialization, primitive_values) {
 
     Primitives object_to_serialize{
-        42, 
+        42,
+        42'000'000'000'000,
+        1.234f,
+        2.345678f, // This could probably have a better value
         "Hello, world!"
     };
     write_then_read_and_assert(object_to_serialize);
@@ -36,6 +39,9 @@ TEST(json_serialization, list_values) {
 
     ListsOfPrimitives object_to_serialize{
         { 42, 1337, 7 }, 
+        { 42'000'000'000, 1234, -42 }, 
+        { 1.23f, 0.01f, 1000.1f }, 
+        { 0.00001, 10.123, 12345.6789 }, 
         { "Hello", ", " "world!" }
     };
     write_then_read_and_assert(object_to_serialize);
@@ -53,11 +59,11 @@ TEST(json_serialization, empty_lists) {
 TEST(json_serialization, nested_primitives) {
 
     NestingTypes object_to_serialize{
-        Primitives{ 42, "Hello, world!"},
+        Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "Hello, world!"},
         {
-            Primitives{ 1, "First element"},
-            Primitives{ 2, "Second element"},
-            Primitives{ 3, "Third element"},
+            Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "First element"},
+            Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "Second element"},
+            Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "Third element"},
         }
     };
     write_then_read_and_assert(object_to_serialize);
@@ -66,6 +72,9 @@ TEST(json_serialization, nested_primitives) {
 TEST(json_serialization, error_on_wrong_object_deserialized) {
     Primitives object_to_serialize{
         42, 
+        42'000'000'000'000,
+        1.234f,
+        2.345678f,
         "Hello, world!"
     };
 
@@ -85,12 +94,15 @@ TEST(json_serialization, error_on_wrong_object_deserialized) {
 TEST(json_serialization, optional_values) {
     
     AllOptionalValues object_with_values{
-        42,
+        42, 
+        42'000'000'000'000,
+        1.234f,
+        2.345678f,
         "Hello, world!",
-        Primitives{1337, "Nested string"},
+        Primitives{1337, 123'000'000'000, 10.1234f, 2.345678, "Nested string"},
         { 
-            Primitives{1, "First primitive"},
-            Primitives{2, "Second primitive"} 
+            Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "First element"},
+            Primitives{ 42, 42'000'000'000'000, 1.234f, 2.345678, "Second element"},
         }
     };
     
@@ -105,13 +117,18 @@ TEST(json_serialization, optional_values) {
     
     AllOptionalValues& deserialized = read_result.get_ok();
 
-    ASSERT_EQ(-1, deserialized.some_int);
+    ASSERT_EQ(-1, deserialized.some_int32);
+    ASSERT_EQ(-1, deserialized.some_int64);
+    ASSERT_EQ(-1.0f, deserialized.some_float);
+    ASSERT_EQ(-1.0, deserialized.some_double);
     ASSERT_EQ("empty", deserialized.some_string);
 
-    Primitives expected_primitives{ -1, "empty" };
+    Primitives expected_primitives{ -1, -1, -1.0f, -1.0, "empty" };
     ASSERT_EQ(expected_primitives, deserialized.nested_primitives);
 
-    std::vector<Primitives> expected_nested_primitives_list{ Primitives{ -1 , "empty" }};
+    std::vector<Primitives> expected_nested_primitives_list{ 
+        Primitives{ -1, -1, -1.0f, -1.0, "empty" }
+    };
     ASSERT_EQ(expected_nested_primitives_list, deserialized.nested_list_of_primitives);
 }
 

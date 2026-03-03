@@ -9,7 +9,19 @@ namespace tf {
         :   json(json)
     { }
 
-    void JsonWritableObject::write(std::string_view name, int value) {
+    void JsonWritableObject::write(std::string_view name, std::int32_t value) {
+        json[name] = value;
+    }
+
+    void JsonWritableObject::write(std::string_view name, std::int64_t value) {
+        json[name] = value;
+    }
+
+    void JsonWritableObject::write(std::string_view name, float value) {
+        json[name] = value;
+    }
+
+    void JsonWritableObject::write(std::string_view name, double value) {
         json[name] = value;
     }
 

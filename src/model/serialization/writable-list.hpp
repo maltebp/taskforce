@@ -12,8 +12,10 @@ namespace tf {
     class WritableList{
 	public:
 
-		virtual void write(int value) = 0;
-
+		virtual void write(std::int32_t value) = 0;
+		virtual void write(std::int64_t value) = 0;
+		virtual void write(float value) = 0;
+		virtual void write(double value) = 0;
 		virtual void write(std::string_view value) = 0;
 
 		void write(const std::string& value) {
