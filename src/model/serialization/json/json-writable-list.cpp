@@ -24,6 +24,10 @@ namespace tf {
         json.push_back(value);
     }
 
+    void JsonWritableList::write(bool value) {
+        json.push_back(value);
+    }
+
     void JsonWritableList::write(std::string_view value) {
         json.push_back(value);
     }

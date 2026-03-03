@@ -14,7 +14,8 @@ Serialization:
     ✔ More types
         ✔ Double
         ✔ Float
-        ☐ Write tests for new types
+        ✔ Write tests for new types
+    ☐ Add bool
     
     Tests:
         Do parameterized tests? Test per type of serializ

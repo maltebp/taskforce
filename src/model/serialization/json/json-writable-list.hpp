@@ -16,6 +16,7 @@ namespace tf {
 		void write(std::int64_t value) override;
 		void write(float value) override;
 		void write(double value) override;
+		void write(bool value) override;
 		void write(std::string_view value) override;
 
 	protected:

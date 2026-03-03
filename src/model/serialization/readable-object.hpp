@@ -60,6 +60,10 @@ namespace tf {
 
 		virtual std::optional<std::vector<double>> read_float64_list(std::string_view name) const = 0;
 
+		virtual std::optional<bool> read_bool(std::string_view name) const = 0;
+
+		virtual std::optional<std::vector<bool>> read_bool_list(std::string_view name) const = 0;
+
 		virtual std::optional<std::string> read_string(std::string_view name) const = 0;
 
 		virtual std::optional<std::vector<std::string>> read_string_list(std::string_view name) const = 0;
@@ -166,6 +170,20 @@ namespace tf {
 	) { 
 		return readable_object.read_float64_list(name);
 	}
+
+	template<>
+	inline std::optional<bool> ReadableObject::ReadProxy<bool>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_bool(name);
+	}
+
+	template<>
+	inline std::optional<std::vector<bool>> ReadableObject::ReadProxy<std::vector<bool>>::read_optional(
+		const ReadableObject& readable_object, std::string_view name
+	) { 
+		return readable_object.read_bool_list(name);
+	}
 	
 	template<>
 	inline std::optional<std::string> ReadableObject::ReadProxy<std::string>::read_optional(
@@ -173,6 +191,7 @@ namespace tf {
 	) { 
 		return readable_object.read_string(name);
 	}
+
 	template<>
 	inline std::optional<std::vector<std::string>> 
 	ReadableObject::ReadProxy<std::vector<std::string>>::read_optional(

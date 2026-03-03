@@ -25,6 +25,10 @@ namespace tf {
         json[name] = value;
     }
 
+    void JsonWritableObject::write(std::string_view name, bool value) {
+        json[name] = value;
+    }
+
     void JsonWritableObject::write(std::string_view name, std::string_view value) {
         json[name] = value;
     }

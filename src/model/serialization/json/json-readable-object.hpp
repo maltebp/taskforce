@@ -93,6 +93,14 @@ namespace tf {
 			return read_list<double>(name);
 		};
 
+		std::optional<bool> read_bool(std::string_view name) const override {
+			return read<bool>(name);
+		};
+
+		std::optional<std::vector<bool>> read_bool_list(std::string_view name) const override {
+			return read_list<bool>(name);
+		};
+
 		std::optional<std::string> read_string(std::string_view name) const override {
 			return read<std::string>(name);
 		};

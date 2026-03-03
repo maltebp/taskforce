@@ -20,6 +20,8 @@ namespace tf {
 
 		void write(std::string_view name, double value) override;
 
+        void write(std::string_view name, bool value) override;
+
         void write(std::string_view name, std::string_view value) override;
 
     protected:

@@ -12,6 +12,7 @@ struct Primitives {
             some_int64 == other.some_int64 && 
             some_float == other.some_float && 
             some_double == other.some_double && 
+            some_bool == other.some_bool && 
             some_string == other.some_string;
     }
 
@@ -19,6 +20,7 @@ struct Primitives {
     std::int64_t some_int64;
     float some_float;
     double some_double;
+    bool some_bool;
     std::string some_string;
 };
 
@@ -30,6 +32,7 @@ struct tf::ObjectSerializer<Primitives> {
         writable_object.write("some_int64", value.some_int64);
         writable_object.write("some_float", value.some_float);
         writable_object.write("some_double", value.some_double);
+        writable_object.write("some_bool", value.some_bool);
         writable_object.write("some_string", value.some_string);
     }
 
@@ -39,6 +42,7 @@ struct tf::ObjectSerializer<Primitives> {
             readable_object.read<std::int64_t>("some_int64"),
             readable_object.read<float>("some_float"),
             readable_object.read<double>("some_double"),
+            readable_object.read<bool>("some_bool"),
             readable_object.read<std::string>("some_string")
         };
     }
@@ -54,6 +58,7 @@ struct ListsOfPrimitives {
             some_int64s == other.some_int64s && 
             some_floats == other.some_floats && 
             some_doubles == other.some_doubles && 
+            some_bools == other.some_bools && 
             some_strings == other.some_strings;
     }
 
@@ -61,6 +66,7 @@ struct ListsOfPrimitives {
     std::vector<std::int64_t> some_int64s;
     std::vector<float> some_floats;
     std::vector<double> some_doubles;
+    std::vector<bool> some_bools;
     std::vector<std::string> some_strings;
 };
 
@@ -72,6 +78,7 @@ struct tf::ObjectSerializer<ListsOfPrimitives> {
         writable_object.write("some_int64s", value.some_int64s.begin(), value.some_int64s.end());
         writable_object.write("some_floats", value.some_floats.begin(), value.some_floats.end());
         writable_object.write("some_doubles", value.some_doubles.begin(), value.some_doubles.end());
+        writable_object.write("some_bools", value.some_bools.begin(), value.some_bools.end());
         writable_object.write("some_strings", value.some_strings.begin(), value.some_strings.end());
     }
 
@@ -81,6 +88,7 @@ struct tf::ObjectSerializer<ListsOfPrimitives> {
             readable_object.read<std::vector<std::int64_t>>("some_int64s"),
             readable_object.read<std::vector<float>>("some_floats"),
             readable_object.read<std::vector<double>>("some_doubles"),
+            readable_object.read<std::vector<bool>>("some_bools"),
             readable_object.read<std::vector<std::string>>("some_strings")
         };
     }
@@ -125,6 +133,7 @@ struct AllOptionalValues {
             some_int64 == other.some_int64 &&
             some_float == other.some_float &&
             some_double == other.some_double &&
+            some_bool == other.some_bool &&
             some_string == other.some_string &&
             nested_primitives == other.nested_primitives &&
             nested_list_of_primitives == other.nested_list_of_primitives;
@@ -134,6 +143,7 @@ struct AllOptionalValues {
     std::int64_t some_int64;
     float some_float;
     double some_double;
+    bool some_bool;
     std::string some_string;
     Primitives nested_primitives;
     std::vector<Primitives> nested_list_of_primitives;
@@ -147,6 +157,7 @@ struct tf::ObjectSerializer<AllOptionalValues> {
         writable_object.write("some_int64", value.some_int64);
         writable_object.write("some_float", value.some_float);
         writable_object.write("some_double", value.some_double);
+        writable_object.write("some_bool", value.some_bool);
         writable_object.write("some_string", value.some_string);
         writable_object.write("nested_primitives", value.nested_primitives),
         writable_object.write("nested_list_of_primitives", value.nested_list_of_primitives.begin(), value.nested_list_of_primitives.end());
@@ -158,9 +169,10 @@ struct tf::ObjectSerializer<AllOptionalValues> {
             readable_object.read_optional<std::int64_t>("some_int64").value_or(-1),
             readable_object.read_optional<float>("some_float").value_or(-1),
             readable_object.read_optional<double>("some_double").value_or(-1),
+            readable_object.read_optional<bool>("some_bool").value_or(false),
             readable_object.read_optional<std::string>("some_string").value_or("empty"),
-            readable_object.read_optional<Primitives>("nested_primitives").value_or(Primitives{-1, -1, -1.0f, -1.0, "empty"}),
-            readable_object.read_optional<std::vector<Primitives>>("nested_list_of_primitives").value_or(std::vector{Primitives{-1, -1, -1.0f, -1.0, "empty"}})
+            readable_object.read_optional<Primitives>("nested_primitives").value_or(Primitives{-1, -1, -1.0f, -1.0, false, "empty"}),
+            readable_object.read_optional<std::vector<Primitives>>("nested_list_of_primitives").value_or(std::vector{Primitives{-1, -1, -1.0f, -1.0, false, "empty"}})
         };
     }
 
