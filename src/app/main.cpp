@@ -1,9 +1,12 @@
 #include <chrono>
 #include <iostream>
+#include <filesystem>
+#include <fstream>
 
 #include <json.hpp>
 
 #include "model/core/expect.hpp"
+#include "app/imgui-app.hpp"
 
 #include "model/workspace.hpp"
 #include "model/time-entry.hpp"
@@ -110,7 +113,7 @@ namespace tf {
         std::shared_ptr<MainWindow> g_main_window;
     }
 
-    std::shared_ptr<Workspace> create_test_workspace() {
+    static std::shared_ptr<Workspace> create_test_workspace() {
         std::shared_ptr<Workspace> workspace = std::make_shared<Workspace>();
 
         workspace->name = "IO Workspace";
@@ -152,8 +155,41 @@ namespace tf {
         return workspace;
     }
 
+    
+
+    static std::shared_ptr<tf::Workspace> open_workspace(const std::filesystem::path& path) {
+        
+        if (!std::filesystem::is_regular_file(path)) {
+            return nullptr;
+        }
+
+        std::ifstream file{path};
+        if (!file.good()) {
+            // TODO: Report proper error
+            return nullptr;
+        }
+
+        JsonSerializer serializer{};
+        Result<Workspace> read_workspace_result = serializer.read<tf::Workspace>(file);
+        if( read_workspace_result.is_err() ) {
+            // TODO: Report proper error
+            return nullptr;
+        }
+
+        return std::make_shared<Workspace>(Workspace{std::move(read_workspace_result.get_ok())});
+    }
+
+    static std::shared_ptr<Workspace> get_initial_workspace() {
+        std::shared_ptr<Workspace> workspace = open_workspace("c:\\Users\\malte\\Desktop\\test-workspace.json");
+        if( workspace != nullptr ) {
+            return workspace;
+        }
+
+        return create_test_workspace();;
+    }
+
     void initialize() {
-        g_workspace = create_test_workspace();
+        g_workspace = get_initial_workspace();
         g_main_window = std::make_shared<MainWindow>(g_workspace);
     }
 
@@ -171,8 +207,6 @@ int main() {
 
     tf::s_expect_report_function = tf::report_expect_to_dialog;
 
-    test_json_serialization();
-
-    //tf::initialize();
-    //return tp::run_imgui_app(tf::app_loop, tf::app_shutdown);
+    tf::initialize();
+    return tf::run_imgui_app(tf::app_loop, tf::app_shutdown);
 }

@@ -25,6 +25,11 @@ namespace tf {
 
 		void write(std::string_view name, const std::string& value) { write(name, std::string_view{ value }); }
 
+		template<typename T>
+		void write(std::string_view name, const std::vector<T>& value) {
+			write(name, value.begin(), value.end());
+		}
+
 		template<typename TIterator>
 		void write(std::string_view name, TIterator begin, TIterator end)
 		{

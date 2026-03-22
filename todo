@@ -15,17 +15,17 @@ Serialization:
         ✔ Double
         ✔ Float
         ✔ Write tests for new types
-    ☐ Add bool
-    
-    Tests:
-        Do parameterized tests? Test per type of serializ
-        ☐ Each type
-        ☐ Invalid input
-        ☐ Invalid structure (custom serialization failing)
+    ✔ Add bool
+
+    ☐ Serialize / deserialize workspace
+    ☐ Json pretty writing
 
 Workspace management:
     ☐ Open Workspace menu
+        ☐ Open file dialog library
     ☐ Save Workspace on key press (Ctrl+S)
+
+☐ Figure out how to show errors
     
 Category column:
     ☐ Validation (from hardcoded values for now)

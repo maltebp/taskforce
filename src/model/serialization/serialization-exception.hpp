@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace {
+namespace tf {
 
     class SerializationException : public std::runtime_error {
     public:

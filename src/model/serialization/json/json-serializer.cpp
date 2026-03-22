@@ -13,6 +13,7 @@ namespace tf {
         void write(std::ostream& stream, std::function<void(WritableObject& root_object)> write_callback) {
 			
 			nlohmann::json root_json_object = nlohmann::json::object();
+			
 			JsonWritableObject root_object{ root_json_object };
 			write_callback(root_object);
 			stream << root_json_object;

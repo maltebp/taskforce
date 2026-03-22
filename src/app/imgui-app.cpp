@@ -22,7 +22,7 @@ void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // Main code
-int tp::run_imgui_app(std::function<void()> loop_callback, std::function<void()> shutdown_callback) {
+int tf::run_imgui_app(std::function<void()> loop_callback, std::function<void()> shutdown_callback) {
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
