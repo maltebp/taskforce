@@ -17,13 +17,15 @@ Serialization:
         ✔ Write tests for new types
     ✔ Add bool
 
-    ☐ Serialize / deserialize workspace
+    ✔ Serialize / deserialize workspace
     ☐ Json pretty writing
 
 Workspace management:
     ☐ Open Workspace menu
         ☐ Open file dialog library
-    ☐ Save Workspace on key press (Ctrl+S)
+    ✔ Save Workspace on key press (Ctrl+S)
+
+☐ Create version class
 
 ☐ Figure out how to show errors
     
